@@ -59,7 +59,7 @@ module.exports = ({context, github, io}) => {
                 lines_loop:
                 for (let line of lines) {
                     line = line.trim()
-                    if line.length === 0 {
+                    if (line.length === 0) {
                         continue
                     }
                     if (!commits_now) {
