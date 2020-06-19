@@ -3,7 +3,7 @@ module.exports = ({context, github, io}) => {
         const central_repo_owner = "KrnowakTestAppOrg"
         const central_repo_repo = "central"
         const central_pending_column_id = "9618257"
-        let date_desc_re = /^\s*((\d{4})-(\d{2})-(\d{2}))\s*$/
+        let date_desc_re = /^\s*((\d{4})-(\d{1,2})-(\d{1,2}))\s*$/
         let page = 0
         const per_page = 100
         let date = new Date()
