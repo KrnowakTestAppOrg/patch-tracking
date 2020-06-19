@@ -89,23 +89,25 @@ module.exports = ({context, github, io}) => {
                             const year = parseInt(match[2], 10)
                             const month = parseInt(match[3], 10)
                             const day = parseInt(match[4], 10)
-                            let issue_date = new Date(year, month, day, 12)
-                            if ((issue_date.getFullYear() !== year) || (issue_date.getMonth() !== month) || (issue_date.getDate() !== day)) {
-                                console.log(`issue ${parts[issue_num_idx]} has bogus date ${value} (actually ${issue_date.getFullYear()}-${issue_date.getMonth()}-${issue_date.getDate()})`)
+                            // months are zero-based in Date, but we
+                            // use 1-based in our messages
+                            let issue_date = new Date(year, month-1, day, 12)
+                            if ((issue_date.getFullYear() !== year) || (issue_date.getMonth() !== month-1) || (issue_date.getDate() !== day)) {
+                                console.log(`issue ${parts[issue_num_idx]} has bogus date ${value} (actually ${issue_date.getFullYear()}-${issue_date.getMonth()+1}-${issue_date.getDate()})`)
                                 continue card_loop
                             }
                             let process = false
                             if (year < date.getFullYear()) {
                                 process = true
                             } else if (year > date.getFullYear()) {
-                            } else if (month < date.getMonth()) {
+                            } else if (month-1 < date.getMonth()) {
                                 process = true
-                            } else if (month > date.getMonth()) {
+                            } else if (month-1 > date.getMonth()) {
                             } else if (day <= issue_date.getDate()) {
                                 process = true
                             }
                             if (!process) {
-                                console.log(`not processing issue ${parts[issue_num_idx]}, it's time hasn't yet come (issues ${value} vs now ${date.getFullYear()}-${date.getMonth()}-${date.getDate()})`)
+                                console.log(`not processing issue ${parts[issue_num_idx]}, it's time hasn't yet come (issues ${value} vs now ${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()})`)
                                 continue card_loop
                             }
                             break
