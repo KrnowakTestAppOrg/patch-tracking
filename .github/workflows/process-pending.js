@@ -3,8 +3,11 @@ module.exports = ({context, github, io}) => {
         const central_repo_owner = "KrnowakTestAppOrg"
         const central_repo_repo = "central"
         const central_pending_column_id = "9618257"
+        let date_desc_re = /^\s*((\d{4})-(\d{2})-(\d{2}))\s*$/
         let page = 0
         const per_page = 100
+        let date = new Date()
+        date = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12)
 
         while (1) {
             page++
@@ -13,6 +16,7 @@ module.exports = ({context, github, io}) => {
                 page: page,
                 per_page: per_page,
             })
+            card_loop:
             for (let card of cards) {
                 if (card.note !== null) {
                     console.log("card is not an issue card", card.url)
@@ -39,17 +43,85 @@ module.exports = ({context, github, io}) => {
                     console.log("issue url:", card.content_url, "not the expected content type, got:", parts[content_type_idx], "expected:", 'issues')
                     continue
                 }
-                const issue_number = parseInt(parts[issue_num_idx], 10)
-                if (isNaN(issue_number)) {
+                if (isNaN(parts[issue_num_idx])) {
                     console.log("issue url:", card.content_url, "issue number is not a number, got:", parts[issue_num_idx])
                     continue
                 }
                 const { data: issue } = await github.issues.get({
                     owner: central_repo_owner,
                     repo: central_repo_repo,
-                    issue_number: issue_number,
+                    issue_number: parts[issue_num_idx],
                 })
-                console.log(issue.body)
+                const lines = issue.body.split("\n")
+                let commits_now = false
+                let pr_data = {}
+                lines_loop:
+                for (let line of lines) {
+                    line = line.trim()
+                    if line.length === 0 {
+                        continue
+                    }
+                    if (!commits_now) {
+                        let [key, ...values] = line.split(':')
+                        let value = values.join(':')
+                        key = key.trim()
+                        value = value.trim()
+                        switch (key) {
+                        case 'owner':
+                            pr_data.owner = value
+                            break
+                        case 'repo':
+                            pr_data.repo = value
+                            break
+                        case 'original-pr':
+                            pr_data.pr = value
+                            break
+                        case 'branch':
+                            pr_data.branch = value
+                            break
+                        case 'date':
+                            let match = value.match(date_desc_re)
+                            if (match === null || match.length !== 5) {
+                                console.log(`invalid date ${value} in issue ${parts[issue_num_idx]}`)
+                                continue card_loop
+                            }
+                            const year = parseInt(match[2], 10)
+                            const month = parseInt(match[3], 10)
+                            const day = parseInt(match[4], 10)
+                            let issue_date = new Date(year, month, day, 12)
+                            if ((issue_date.getFullYear() !== year) || (issue_date.getMonth() !== month) || (issue_date.getDate() !== day)) {
+                                console.log(`issue ${parts[issue_num_idx]} has bogus date ${value} (actually ${issue_date.getFullYear()}-${issue_date.getMonth()}-${issue_date.getDate()})`)
+                                continue card_loop
+                            }
+                            let process = false
+                            if (year < date.getFullYear()) {
+                                process = true
+                            } else if (year > date.getFullYear()) {
+                            } else if (month < date.getMonth()) {
+                                process = true
+                            } else if (month > date.getMonth()) {
+                            } else if (day <= issue_date.getDate()) {
+                                process = true
+                            }
+                            if (!process) {
+                                console.log(`not processing issue ${parts[issue_num_idx]}, it's time hasn't yet come (issues ${value} vs now ${date.getFullYear()}-${date.getMonth()}-${date.getDate()})`)
+                                continue card_loop
+                            }
+                            break
+                        case 'commits':
+                            commits_now = true
+                            break
+                        }
+                    } else {
+                        if (/^[0-9A-Fa-f]{40}$/.test(line)) {
+                            pr_data.commits.push(line)
+                        } else {
+                            console.log(`${line} in issue ${parts[issue_num_idx]} is not a valid commit`)
+                            continue card_loop
+                        }
+                    }
+                }
+                console.log(pr_data)
             }
             if (cards.length < per_page) {
                 break
