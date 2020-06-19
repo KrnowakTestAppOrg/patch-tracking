@@ -17,4 +17,4 @@ jobs:
           script: |
             const path = require('path')
             const scriptPath = path.resolve('./.github/workflows/process-pending.js')
-            require(scriptPath)({context, github, io})
+            require(scriptPath)({context, github, io, core})

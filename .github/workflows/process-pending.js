@@ -1,4 +1,4 @@
-module.exports = ({context, github, io}) => {
+module.exports = ({context, github, io, core}) => {
     (async () => {
         const central_repo_owner = "KrnowakTestAppOrg"
         const central_repo_repo = "central"
