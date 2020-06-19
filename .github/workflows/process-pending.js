@@ -9,6 +9,7 @@ module.exports = ({context, github, io}) => {
         let date = new Date()
         date = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12)
 
+        console.log(`Current directory: ${process.cwd()}`)
         while (1) {
             page++
             const { data: cards } = await github.projects.listCards({
