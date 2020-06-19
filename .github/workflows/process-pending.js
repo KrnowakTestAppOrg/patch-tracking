@@ -8,6 +8,8 @@ module.exports = ({context, github, io, core}) => {
         const per_page = 100
         let date = new Date()
         date = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12)
+        const util = require('util')
+        const exec = util.promisify(require('child_process').exec)
 
         console.log(`Current directory: ${process.cwd()}`)
         while (1) {
@@ -124,7 +126,17 @@ module.exports = ({context, github, io, core}) => {
                         }
                     }
                 }
-                console.log(pr_data)
+                let escape = (str) => {
+                    let escaped = str.replace(/'/gi, "'\\''");
+                    return `'${escaped}'`
+                }
+                let escaped_args = []
+                for (const arg of [core.getInput('github-token'), pr_data.owner, pr_data.repo, pr_data.branch, pr_data.pr, ...pr_data.commits]) {
+                    escaped_args.push(escape(arg))
+                }
+                const { stdout, stderr } = exec(`./.github/workflows/git-heavy-lifting.sh ${escaped_args.join(' ')}`)
+                console.log(stdout)
+                console.log(stderr)
             }
             if (cards.length < per_page) {
                 break
