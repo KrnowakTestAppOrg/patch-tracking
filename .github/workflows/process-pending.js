@@ -6,6 +6,7 @@ module.exports = ({context, github, io, core}) => {
             console.log("skipping the checks")
         }
 
+        const bot_name = "krnowak-test-bot"
         const central_repo_owner = "KrnowakTestAppOrg"
         const central_repo_repo = "central"
         const central_pending_column_id = 9618257
@@ -159,6 +160,8 @@ module.exports = ({context, github, io, core}) => {
                         head: bot_branch,
                         base: pr_data.branch,
                         body: [
+                            `@${bot_name}: ignore`,
+                            "",
                             `Fixes #${issue_number}`,
                             "",
                             `Based on PR #${pr_data.pr}`
