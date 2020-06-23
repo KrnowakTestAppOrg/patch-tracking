@@ -153,7 +153,7 @@ module.exports = ({context, github, io, core}) => {
                         position: "top",
                         column_id: central_awaiting_review_column_id,
                     })
-                    await github.pulls.create({
+                    const { data: filed_pr } = await github.pulls.create({
                         owner: pr_data.owner,
                         repo: pr_data.repo,
                         title: `Propagate PR ${pr_data.pr} to ${pr_data.branch}`,
@@ -166,6 +166,12 @@ module.exports = ({context, github, io, core}) => {
                             "",
                             `Based on PR #${pr_data.pr}`
                         ].join("\n"),
+                    })
+                    await github.issues.createComment({
+                        owner: central_repo_owner,
+                        repo: central_repo_repo,
+                        issue_number: issue_number,
+                        body: `Filed ${filed_pr.html_url}.`,
                     })
                 } catch ({error, stdout, stderr}) {
                     await github.projects.moveCard({
