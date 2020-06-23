@@ -31,8 +31,7 @@ module.exports = ({context, github, io, core}) => {
                     console.log("card is not an issue card", card.url)
                     continue
                 }
-                // content_url looks like
-                // https://api.github.com/repos/KrnowakTestAppOrg/proj/issues/6
+                // https://api.github.com/repos/KrnowakTestAppOrg/central/issues/6
                 const parts = card.content_url.split('/')
                 if (parts.length < 4) {
                     console.log("bogus content url", card.content_url)
@@ -41,8 +40,14 @@ module.exports = ({context, github, io, core}) => {
                 const content_type_idx = parts.length - 2
                 const repo_idx = parts.length - 3
                 const owner_idx = parts.length - 4
-                const owner = parts[owner_idx]
-                const repo = parts[repo_idx]
+                if (parts[owner_idx] !== central_repo_owner) {
+                    console.log("issue url:", card.content_url, "outside the expected owner, got:", parts[owner_idx], "expected:", central_repo_owner)
+                    continue
+                }
+                if (parts[repo_idx] !== central_repo_repo) {
+                    console.log("issue url:", card.content_url, "outside the expected repo, got:", parts[repo_idx], "expected:", central_repo_repo)
+                    continue
+                }
                 if (parts[content_type_idx] !== 'issues') {
                     console.log("issue url:", card.content_url, "not the expected content type, got:", parts[content_type_idx], "expected:", 'issues')
                     continue
@@ -53,8 +58,8 @@ module.exports = ({context, github, io, core}) => {
                     continue
                 }
                 const { data: issue } = await github.issues.get({
-                    owner: owner,
-                    repo: repo,
+                    owner: central_repo_owner,
+                    repo: central_repo_repo,
                     issue_number: issue_number,
                 })
                 const lines = issue.body.split("\n")
@@ -74,6 +79,12 @@ module.exports = ({context, github, io, core}) => {
                         key = key.trim()
                         value = value.trim()
                         switch (key) {
+                        case 'owner':
+                            pr_data.owner = value
+                            break
+                        case 'repo':
+                            pr_data.repo = value
+                            break
                         case 'original-pr':
                             pr_data.pr = value
                             break
@@ -130,7 +141,7 @@ module.exports = ({context, github, io, core}) => {
                 }
                 const bot_branch = `test-bot/propagate-pr-${pr_data.pr}-${pr_data.branch}`
                 let escaped_args = []
-                for (const arg of [core.getInput('github-token'), owner, repo, pr_data.branch, bot_branch, ...pr_data.commits]) {
+                for (const arg of [core.getInput('github-token'), pr_data.owner, pr_data.repo, pr_data.branch, bot_branch, ...pr_data.commits]) {
                     escaped_args.push(escape(arg))
                 }
                 try {
@@ -140,25 +151,26 @@ module.exports = ({context, github, io, core}) => {
                         position: "top",
                         column_id: central_awaiting_review_column_id,
                     })
+                    const html_issue_url = `https://github.com/${central_repo_owner}/${central_repo_repo}/issues/${issue_number}`
                     const { data: filed_pr } = await github.pulls.create({
-                        owner: owner,
-                        repo: repo,
+                        owner: pr_data.owner,
+                        repo: pr_data.repo,
                         title: `Propagate PR ${pr_data.pr} to ${pr_data.branch}`,
                         head: bot_branch,
                         base: pr_data.branch,
                         body: [
                             `@${bot_name}: ignore`,
                             "",
-                            `Fixes #${issue_number}`,
+                            `Fixes ${html_issue_url}`,
                             "",
                             `Based on PR #${pr_data.pr}`
                         ].join("\n"),
                     })
                     await github.issues.createComment({
-                        owner: owner,
-                        repo: repo,
+                        owner: central_repo_owner,
+                        repo: central_repo_repo,
                         issue_number: issue_number,
-                        body: `Filed #${filed_pr.number}.`,
+                        body: `Filed ${filed_pr.html_url}.`,
                     })
                 } catch ({error, stdout, stderr}) {
                     await github.projects.moveCard({
@@ -167,8 +179,8 @@ module.exports = ({context, github, io, core}) => {
                         column_id: central_needs_manual_intervention_column_id,
                     })
                     await github.issues.createComment({
-                        owner: owner,
-                        repo: repo,
+                        owner: central_repo_owner,
+                        repo: central_repo_repo,
                         issue_number: issue_number,
                         body: [
                             "stdout:",
