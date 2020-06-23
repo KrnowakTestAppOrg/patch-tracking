@@ -10,14 +10,19 @@ branch="${4}"
 pr="${5}"
 shift 5
 
-if [[ ! -e '~/.git-credentials' ]]; then
-    git config --global credential.helper store
-    echo "https://${github_token}:x-oauth-basic@github.com" >'~/.git-credentials'
+workdir="bot-work-dir"
+credsfile="${PWD}/${workdir})/creds"
+
+mkdir -p "${workdir}"
+
+if [[ ! -e "${credsfile}" ]]; then
+    git config --global credential.helper "store --file=${credsfile}"
+    echo "https://${github_token}:x-oauth-basic@github.com" >"${credsfile}"
     git config --global user.email 'krnowak.test.bot@gmail.com'
     git config --global user.name 'Test Bot'
 fi
 
-repodir="bot-work-dir/${owner}/${repo}"
+repodir="${workdir}/repos/${owner}/${repo}"
 
 if [[ -d "${repodir}" ]]; then
     mkdir -p "$(dirname "${repodir}")"
