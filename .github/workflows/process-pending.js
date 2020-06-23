@@ -171,6 +171,24 @@ module.exports = ({context, github, io, core}) => {
                         position: "top",
                         column_id: central_needs_manual_intervention_column_id,
                     })
+                    await github.issues.createComment({
+                        owner: central_repo_owner,
+                        repo: central_repo_repo,
+                        issue_number: issue_number,
+                        body: [
+                            "stdout:",
+                            ""
+                            "```",
+                            stdout,
+                            "```",
+                            "",
+                            "stderr:",
+                            "",
+                            "```",
+                            stderr,
+                            "```"
+                        ].join("\n"),
+                    })
                 })
             }
             if (cards.length < per_page) {
