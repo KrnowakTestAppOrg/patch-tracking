@@ -7,11 +7,9 @@ module.exports = ({context, github, io, core}) => {
         }
 
         const bot_name = "krnowak-test-bot"
-        const central_repo_owner = "KrnowakTestAppOrg"
-        const central_repo_repo = "central"
-        const central_pending_column_id = 9618257
-        const central_awaiting_review_column_id = 9618258
-        const central_needs_manual_intervention_column_id = 9618260
+        const central_pending_column_id = 9723463
+        const central_awaiting_review_column_id = 9723464
+        const central_needs_manual_intervention_column_id = 9723465
         let date_desc_re = /^\s*((\d{4})-(\d{1,2})-(\d{1,2}))\s*$/
         let page = 0
         const per_page = 100
