@@ -9,6 +9,8 @@ module.exports = ({context, github, io, core}) => {
         const central_repo_owner = "KrnowakTestAppOrg"
         const central_repo_repo = "central"
         const central_pending_column_id = "9618257"
+        const central_awaiting_review_column_id = "9618258"
+        const central_needs_manual_intervention_column_id = "9618260"
         let date_desc_re = /^\s*((\d{4})-(\d{1,2})-(\d{1,2}))\s*$/
         let page = 0
         const per_page = 100
@@ -140,9 +142,24 @@ module.exports = ({context, github, io, core}) => {
                 for (const arg of [core.getInput('github-token'), pr_data.owner, pr_data.repo, pr_data.branch, pr_data.pr, ...pr_data.commits]) {
                     escaped_args.push(escape(arg))
                 }
-                const { stdout, stderr } = exec(`./.github/workflows/git-heavy-lifting.sh ${escaped_args.join(' ')}`)
-                console.log(stdout)
-                console.log(stderr)
+                exec(`./.github/workflows/git-heavy-lifting.sh ${escaped_args.join(' ')}`).then(({stdout, stderr}) => {
+                    console.log("succeeded, stdout", stdout)
+                    console.log("succeeded, stderr", stderr)
+                    await github.projects.moveCard({
+                        card_id: card.id,
+                        position: "top",
+                        column_id: central_awaiting_review_column_id,
+                    })
+                }).catch(({error, stdout, stderr}) => {
+                    console.log("failed, error", error)
+                    console.log("failed, stdout", stdout)
+                    console.log("failed, stderr", stderr)
+                    await github.projects.moveCard({
+                        card_id: card.id,
+                        position: "top",
+                        column_id: central_needs_manual_intervention_column_id,
+                    })
+                })
             }
             if (cards.length < per_page) {
                 break
