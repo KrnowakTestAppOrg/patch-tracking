@@ -140,8 +140,9 @@ module.exports = ({context, github, io, core}) => {
                     let escaped = str.replace(/'/gi, "'\\''");
                     return `'${escaped}'`
                 }
+                const bot_branch = `test-bot/propagate-pr-${pr_data.pr}-${pr_data.branch}`
                 let escaped_args = []
-                for (const arg of [core.getInput('github-token'), pr_data.owner, pr_data.repo, pr_data.branch, pr_data.pr, ...pr_data.commits]) {
+                for (const arg of [core.getInput('github-token'), pr_data.owner, pr_data.repo, pr_data.branch, bot_branch, ...pr_data.commits]) {
                     escaped_args.push(escape(arg))
                 }
                 exec(`./.github/workflows/git-heavy-lifting.sh ${escaped_args.join(' ')}`).then(({stdout, stderr}) => {

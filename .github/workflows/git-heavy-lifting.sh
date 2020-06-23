@@ -7,7 +7,7 @@ github_token="${1}"
 owner="${2}"
 repo="${3}"
 branch="${4}"
-pr="${5}"
+bot_branch="${5}"
 shift 5
 
 workdir="bot-work-dir"
@@ -31,7 +31,6 @@ else
     git -C "${repodir}" fetch origin -pPt
 fi
 
-bot_branch="test-bot/propagate-pr-${pr}-${branch}"
 # get rid of changed or untracked files
 git -C "${repodir}" reset --hard HEAD
 git -C "${repodir}" clean -ffdx
