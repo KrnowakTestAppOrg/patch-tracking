@@ -10,8 +10,8 @@ branch="${4}"
 bot_branch="${5}"
 shift 5
 
-workdir="bot-work-dir"
-credsfile="${PWD}/${workdir}/creds"
+workdir="$(dirname "${PWD}")/bot-work-dir"
+credsfile="${workdir}/creds"
 
 mkdir -p "${workdir}"
 
