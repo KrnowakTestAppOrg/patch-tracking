@@ -13,6 +13,7 @@ module.exports = ({context, github, io, core}) => {
         const central_awaiting_review_column_id = 9618258
         const central_needs_manual_intervention_column_id = 9618260
         let date_desc_re = /^\s*((\d{4})-(\d{1,2})-(\d{1,2}))\s*$/
+        let issue_number_re = /^\s*(\d+)\s*$/
         let page = 0
         const per_page = 100
         let date = new Date()
@@ -54,11 +55,12 @@ module.exports = ({context, github, io, core}) => {
                     console.log("issue url:", card.content_url, "not the expected content type, got:", parts[content_type_idx], "expected:", 'issues')
                     continue
                 }
-                const issue_number = parts[issue_num_idx]
-                if (isNaN(issue_number)) {
-                    console.log("issue url:", card.content_url, "issue number is not a number, got:", issue_number)
+                let match = parts[issue_num_idx].match(issue_number_re)
+                if (match === nil || match.length !== 2) {
+                    console.log("issue url:", card.content_url, "issue number is not a number, got:", parts[issue_num_idx])
                     continue
                 }
+                const issue_number = match[1]
                 const { data: issue } = await github.issues.get({
                     owner: central_repo_owner,
                     repo: central_repo_repo,
