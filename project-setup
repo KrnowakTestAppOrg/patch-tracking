@@ -1,0 +1,18 @@
+- create a central repo
+  - a separate one is a good idea, because the bot will create a bunch of issues there, that are not really usable for users
+- create a project in the central repo
+- create 4 columns in the project
+  - "pending" - no automation
+  - "awaiting review" - no automation
+  - "needs manual intervention" - no automation
+  - "done" - "done" automation - only move issues here when closed
+- create an email account for bot
+- create a github account for bot
+- create a personal access token
+  - scope - public_repo (or repo, if there are some private repos involved)
+  - currently I added all the scopes/privileges to the bot, since I was getting some rather cryptic errors, which some people on the internet think that these are related to permissions
+- in the central repo settings, create a secret named BOTS_PAT with the personal access token from previous step
+- do the same for all the project repositories
+- in the central repo, put the workflows into .github/workflows from this repo into master branch
+- in the project repos, put the workflows into .github/workflows from the "proj" repo into all flatcar-foo branches
+- profit
