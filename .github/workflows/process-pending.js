@@ -153,6 +153,7 @@ module.exports = ({context, github, io, core}) => {
                         position: "top",
                         column_id: central_awaiting_review_column_id,
                     })
+                    const html_issue_url = `https://github.com/${central_repo_owner}/${central_repo_repo}/issues/${issue_number}`
                     const { data: filed_pr } = await github.pulls.create({
                         owner: pr_data.owner,
                         repo: pr_data.repo,
@@ -162,7 +163,7 @@ module.exports = ({context, github, io, core}) => {
                         body: [
                             `@${bot_name}: ignore`,
                             "",
-                            `Fixes #${issue_number}`,
+                            `Fixes ${html_issue_url}`,
                             "",
                             `Based on PR #${pr_data.pr}`
                         ].join("\n"),
