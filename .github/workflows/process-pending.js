@@ -153,6 +153,18 @@ module.exports = ({context, github, io, core}) => {
                         position: "top",
                         column_id: central_awaiting_review_column_id,
                     })
+                    await github.pulls.create({
+                        owner: pr_data.owner,
+                        repo: pr_data.repo,
+                        title: `Propagate PR ${pr_data.pr} to ${pr_data.branch}`,
+                        head: bot_branch,
+                        base: pr_data.branch,
+                        body: [
+                            `Fixes #${issue_number}`,
+                            "",
+                            `Based on PR #${pr_data.pr}`
+                        ].join("\n"),
+                    })
                 } catch ({error, stdout, stderr}) {
                     await github.projects.moveCard({
                         card_id: card.id,
