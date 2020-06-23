@@ -28,7 +28,7 @@ if [[ ! -d "${repodir}" ]]; then
     mkdir -p "$(dirname "${repodir}")"
     git clone "https://github.com/${owner}/${repo}.git" "${repodir}"
 else
-    git fetch origin -pPt
+    git -C "${repodir}" fetch origin -pPt
 fi
 
 bot_branch="test-bot/propagate-pr-${pr}-${branch}"
@@ -43,12 +43,12 @@ git -C "${repodir}" checkout -b "${bot_branch}"
 for commit in "${@}"; do
     if ! git -C "${repodir}" cherry-pick "${commit}"; then
         git -C "${repodir}" cherry-pick --abort
-        git checkout "${branch}"
-        git branch -D "${bot_branch}"
+        git -C "${repodir}" checkout "${branch}"
+        git -C "${repodir}" branch -D "${bot_branch}"
         exit 1
     fi
 done
 # push and clean up
-git push origin "${bot_branch}"
-git checkout "${branch}"
-git branch -D "${bot_branch}"
+git -C "${repodir}" push origin "${bot_branch}"
+git -C "${repodir}" checkout "${branch}"
+git -C "${repodir}" branch -D "${bot_branch}"
