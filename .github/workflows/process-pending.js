@@ -65,7 +65,9 @@ module.exports = ({context, github, io, core}) => {
                 })
                 const lines = issue.body.split("\n")
                 let commits_now = false
-                let pr_data = {}
+                let pr_data = {
+                    commits: [],
+                }
                 lines_loop:
                 for (let line of lines) {
                     line = line.trim()
