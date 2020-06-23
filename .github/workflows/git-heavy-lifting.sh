@@ -11,7 +11,7 @@ pr="${5}"
 shift 5
 
 workdir="bot-work-dir"
-credsfile="${PWD}/${workdir})/creds"
+credsfile="${PWD}/${workdir}/creds"
 
 mkdir -p "${workdir}"
 
