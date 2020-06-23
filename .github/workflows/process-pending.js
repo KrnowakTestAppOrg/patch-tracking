@@ -177,7 +177,7 @@ module.exports = ({context, github, io, core}) => {
                         issue_number: issue_number,
                         body: [
                             "stdout:",
-                            ""
+                            "",
                             "```",
                             stdout,
                             "```",
@@ -186,10 +186,10 @@ module.exports = ({context, github, io, core}) => {
                             "",
                             "```",
                             stderr,
-                            "```"
+                            "```",
                         ].join("\n"),
                     })
-                })
+                }
             }
             if (cards.length < per_page) {
                 break
