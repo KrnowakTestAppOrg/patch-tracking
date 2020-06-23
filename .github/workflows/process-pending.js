@@ -145,7 +145,7 @@ module.exports = ({context, github, io, core}) => {
                 exec(`./.github/workflows/git-heavy-lifting.sh ${escaped_args.join(' ')}`).then(({stdout, stderr}) => {
                     console.log("succeeded, stdout", stdout)
                     console.log("succeeded, stderr", stderr)
-                    await github.projects.moveCard({
+                    github.projects.moveCard({
                         card_id: card.id,
                         position: "top",
                         column_id: central_awaiting_review_column_id,
@@ -154,7 +154,7 @@ module.exports = ({context, github, io, core}) => {
                     console.log("failed, error", error)
                     console.log("failed, stdout", stdout)
                     console.log("failed, stderr", stderr)
-                    await github.projects.moveCard({
+                    github.projects.moveCard({
                         card_id: card.id,
                         position: "top",
                         column_id: central_needs_manual_intervention_column_id,
