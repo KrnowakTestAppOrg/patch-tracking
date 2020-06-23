@@ -54,14 +54,15 @@ module.exports = ({context, github, io, core}) => {
                     console.log("issue url:", card.content_url, "not the expected content type, got:", parts[content_type_idx], "expected:", 'issues')
                     continue
                 }
-                if (isNaN(parts[issue_num_idx])) {
-                    console.log("issue url:", card.content_url, "issue number is not a number, got:", parts[issue_num_idx])
+                const issue_number = parts[issue_num_idx]
+                if (isNaN(issue_number)) {
+                    console.log("issue url:", card.content_url, "issue number is not a number, got:", issue_number)
                     continue
                 }
                 const { data: issue } = await github.issues.get({
                     owner: central_repo_owner,
                     repo: central_repo_repo,
-                    issue_number: parts[issue_num_idx],
+                    issue_number: issue_number,
                 })
                 const lines = issue.body.split("\n")
                 let commits_now = false
@@ -95,7 +96,7 @@ module.exports = ({context, github, io, core}) => {
                         case 'date':
                             let match = value.match(date_desc_re)
                             if (match === null || match.length !== 5) {
-                                console.log(`invalid date ${value} in issue ${parts[issue_num_idx]}`)
+                                console.log(`invalid date ${value} in issue ${issue_number}`)
                                 continue card_loop
                             }
                             const year = parseInt(match[2], 10)
@@ -105,7 +106,7 @@ module.exports = ({context, github, io, core}) => {
                             // use 1-based in our messages
                             let issue_date = new Date(year, month-1, day, 12)
                             if ((issue_date.getFullYear() !== year) || (issue_date.getMonth() !== month-1) || (issue_date.getDate() !== day)) {
-                                console.log(`issue ${parts[issue_num_idx]} has bogus date ${value} (actually ${issue_date.getFullYear()}-${issue_date.getMonth()+1}-${issue_date.getDate()})`)
+                                console.log(`issue ${issue_number} has bogus date ${value} (actually ${issue_date.getFullYear()}-${issue_date.getMonth()+1}-${issue_date.getDate()})`)
                                 continue card_loop
                             }
                             let process = false
@@ -119,7 +120,7 @@ module.exports = ({context, github, io, core}) => {
                                 process = true
                             }
                             if (!process) {
-                                console.log(`not processing issue ${parts[issue_num_idx]}, it's time hasn't yet come (issues ${value} vs now ${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()})`)
+                                console.log(`not processing issue ${issue_number}, it's time hasn't yet come (issues ${value} vs now ${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()})`)
                                 continue card_loop
                             }
                             break
@@ -131,7 +132,7 @@ module.exports = ({context, github, io, core}) => {
                         if (/^[0-9A-Fa-f]{40}$/.test(line)) {
                             pr_data.commits.push(line)
                         } else {
-                            console.log(`${line} in issue ${parts[issue_num_idx]} is not a valid commit`)
+                            console.log(`${line} in issue ${issue_number} is not a valid commit`)
                             continue card_loop
                         }
                     }
