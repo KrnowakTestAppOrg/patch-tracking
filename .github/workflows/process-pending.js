@@ -146,19 +146,15 @@ module.exports = ({context, github, io, core}) => {
                 for (const arg of [core.getInput('github-token'), pr_data.owner, pr_data.repo, pr_data.branch, bot_branch, ...pr_data.commits]) {
                     escaped_args.push(escape(arg))
                 }
-                exec(`./.github/workflows/git-heavy-lifting.sh ${escaped_args.join(' ')}`).then(({stdout, stderr}) => {
-                    console.log("succeeded, stdout", stdout)
-                    console.log("succeeded, stderr", stderr)
-                    github.projects.moveCard({
+                try {
+                    await exec(`./.github/workflows/git-heavy-lifting.sh ${escaped_args.join(' ')}`)
+                    await github.projects.moveCard({
                         card_id: card.id,
                         position: "top",
                         column_id: central_awaiting_review_column_id,
                     })
-                }).catch(({error, stdout, stderr}) => {
-                    console.log("failed, error", error)
-                    console.log("failed, stdout", stdout)
-                    console.log("failed, stderr", stderr)
-                    github.projects.moveCard({
+                } catch ({error, stdout, stderr}) {
+                    await github.projects.moveCard({
                         card_id: card.id,
                         position: "top",
                         column_id: central_needs_manual_intervention_column_id,
