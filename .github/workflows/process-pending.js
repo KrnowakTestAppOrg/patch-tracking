@@ -163,6 +163,7 @@ module.exports = ({context, github, io, core}) => {
                         base: pr_data.branch,
                         body: [
                             `@${bot_name}: close ${issue_number}`,
+                            `@${bot_name}: no-propagate`,
                             "",
                             `Based on PR #${pr_data.pr}`
                         ].join("\n"),
