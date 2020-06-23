@@ -19,7 +19,6 @@ module.exports = ({context, github, io, core}) => {
         const util = require('util')
         const exec = util.promisify(require('child_process').exec)
 
-        console.log(`Current directory: ${process.cwd()}`)
         while (1) {
             page++
             const { data: cards } = await github.projects.listCards({
