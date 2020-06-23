@@ -2,7 +2,7 @@ module.exports = ({context, github, io, core}) => {
     (async () => {
         const kicker_issue_number = 7
 
-        if (context.payload.issue === nil || context.payload.issue.number !== kicker_issue_number) {
+        if (context.payload.issue === null || context.payload.issue.number !== kicker_issue_number) {
             console.log("skipping the checks")
         }
 
