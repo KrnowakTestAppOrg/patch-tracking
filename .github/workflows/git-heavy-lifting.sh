@@ -24,7 +24,7 @@ fi
 
 repodir="${workdir}/repos/${owner}/${repo}"
 
-if [[ -d "${repodir}" ]]; then
+if [[ ! -d "${repodir}" ]]; then
     mkdir -p "$(dirname "${repodir}")"
     git clone "https://github.com/${owner}/${repo}.git" "${repodir}"
 else
