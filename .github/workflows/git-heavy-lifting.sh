@@ -31,23 +31,25 @@ else
     git -C "${repodir}" fetch origin -pPt
 fi
 
+cd "${repodir}"
+
 # get rid of changed or untracked files
-git -C "${repodir}" reset --hard HEAD
-git -C "${repodir}" clean -ffdx
+git reset --hard HEAD
+git clean -ffdx
 # checkout the target branch and update it
-git -C "${repodir}" checkout "${branch}"
-git -C "${repodir}" reset --hard "origin/${branch}"
+git checkout "${branch}"
+git reset --hard "origin/${branch}"
 # create a new branch for cherry picking
-git -C "${repodir}" checkout -b "${bot_branch}"
+git checkout -b "${bot_branch}"
 for commit in "${@}"; do
-    if ! git -C "${repodir}" cherry-pick "${commit}"; then
-        git -C "${repodir}" cherry-pick --abort
-        git -C "${repodir}" checkout "${branch}"
-        git -C "${repodir}" branch -D "${bot_branch}"
+    if ! git cherry-pick "${commit}"; then
+        git cherry-pick --abort
+        git checkout "${branch}"
+        git branch -D "${bot_branch}"
         exit 1
     fi
 done
 # push and clean up
-git -C "${repodir}" push origin "${bot_branch}"
-git -C "${repodir}" checkout "${branch}"
-git -C "${repodir}" branch -D "${bot_branch}"
+git push origin "${bot_branch}"
+git checkout "${branch}"
+git branch -D "${bot_branch}"
