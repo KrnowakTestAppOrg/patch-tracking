@@ -56,7 +56,7 @@ module.exports = ({context, github, io, core}) => {
                     continue
                 }
                 let match = parts[issue_num_idx].match(issue_number_re)
-                if (match === nil || match.length !== 2) {
+                if (match === null || match.length !== 2) {
                     console.log("issue url:", card.content_url, "issue number is not a number, got:", parts[issue_num_idx])
                     continue
                 }
