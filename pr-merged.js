@@ -1,10 +1,10 @@
 module.exports = ({context, github}) => {
+    const config = () => {
+        const path = require('path')
+        const scriptPath = path.resolve('./config.js')
+        return require(scriptPath)()
+    }()
     (async () => {
-        // configured stuff
-        const bot_name = "krnowak-test-bot"
-        const central_repo_owner = "KrnowakTestAppOrg"
-        const central_repo_repo = "central"
-        const central_pending_column_id = 9618257
         try {
             await github.pulls.checkIfMerged({
                 owner: context.repo.owner,
@@ -85,7 +85,7 @@ module.exports = ({context, github}) => {
         // branch_desc: alpha, beta, stable
         // date_spec: nope, asap, \d+[mwd] (month, week, day), yyyy-mm-dd
         // issue_number: \d+
-        const prefix = `@${bot_name}:`
+        const prefix = `@${config.bot_name}:`
         let issues = {
             owner: context.repo.owner,
             repo: context.repo.repo,
@@ -252,13 +252,13 @@ module.exports = ({context, github}) => {
                     ...issues.commits,
                 ]
                 const { data: issue } = await github.issues.create({
-                    owner: central_repo_owner,
-                    repo: central_repo_repo,
+                    owner: config.central_repo_owner,
+                    repo: config.central_repo_repo,
                     title: `Propagate PR ${issues.pr} from ${issues.owner}/${issues.repo} to ${branch.name}`,
                     body: body.join("\n"),
                 })
                 await github.projects.createCard({
-                    column_id: central_pending_column_id,
+                    column_id: config.central_pending_column_id,
                     content_id: issue.id,
                     content_type: "Issue",
                 })
@@ -266,8 +266,8 @@ module.exports = ({context, github}) => {
         }
         for (let issue_number of closings) {
             await github.issues.update({
-                owner: central_repo_owner,
-                repo: central_repo_repo,
+                owner: config.central_repo_owner,
+                repo: config.central_repo_repo,
                 issue_number: issue_number,
                 state: "closed",
             })

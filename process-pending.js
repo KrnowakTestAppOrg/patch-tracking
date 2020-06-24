@@ -1,17 +1,14 @@
 module.exports = ({context, github, io, core}) => {
+    const config = () => {
+        const path = require('path')
+        const scriptPath = path.resolve('./config.js')
+        return require(scriptPath)()
+    }()
     (async () => {
-        const kicker_issue_number = 7
-
-        if (context.payload.issue === null || context.payload.issue.number !== kicker_issue_number) {
+        if (context.payload.issue === null || context.payload.issue.number !== config.kicker_issue_number) {
             console.log("skipping the checks")
         }
 
-        const bot_name = "krnowak-test-bot"
-        const central_repo_owner = "KrnowakTestAppOrg"
-        const central_repo_repo = "central"
-        const central_pending_column_id = 9618257
-        const central_awaiting_review_column_id = 9618258
-        const central_needs_manual_intervention_column_id = 9618260
         let date_desc_re = /^\s*((\d{4})-(\d{1,2})-(\d{1,2}))\s*$/
         let issue_number_re = /^\s*(\d+)\s*$/
         let page = 0
@@ -24,7 +21,7 @@ module.exports = ({context, github, io, core}) => {
         while (1) {
             page++
             const { data: cards } = await github.projects.listCards({
-                column_id: central_pending_column_id,
+                column_id: config.central_pending_column_id,
                 page: page,
                 per_page: per_page,
             })
@@ -43,12 +40,12 @@ module.exports = ({context, github, io, core}) => {
                 const content_type_idx = parts.length - 2
                 const repo_idx = parts.length - 3
                 const owner_idx = parts.length - 4
-                if (parts[owner_idx] !== central_repo_owner) {
-                    console.log("issue url:", card.content_url, "outside the expected owner, got:", parts[owner_idx], "expected:", central_repo_owner)
+                if (parts[owner_idx] !== config.central_repo_owner) {
+                    console.log("issue url:", card.content_url, "outside the expected owner, got:", parts[owner_idx], "expected:", config.central_repo_owner)
                     continue
                 }
-                if (parts[repo_idx] !== central_repo_repo) {
-                    console.log("issue url:", card.content_url, "outside the expected repo, got:", parts[repo_idx], "expected:", central_repo_repo)
+                if (parts[repo_idx] !== config.central_repo_repo) {
+                    console.log("issue url:", card.content_url, "outside the expected repo, got:", parts[repo_idx], "expected:", config.central_repo_repo)
                     continue
                 }
                 if (parts[content_type_idx] !== 'issues') {
@@ -62,8 +59,8 @@ module.exports = ({context, github, io, core}) => {
                 }
                 const issue_number = match[1]
                 const { data: issue } = await github.issues.get({
-                    owner: central_repo_owner,
-                    repo: central_repo_repo,
+                    owner: config.central_repo_owner,
+                    repo: config.central_repo_repo,
                     issue_number: issue_number,
                 })
                 const lines = issue.body.split("\n")
@@ -153,7 +150,7 @@ module.exports = ({context, github, io, core}) => {
                     await github.projects.moveCard({
                         card_id: card.id,
                         position: "top",
-                        column_id: central_awaiting_review_column_id,
+                        column_id: config.central_awaiting_review_column_id,
                     })
                     const { data: filed_pr } = await github.pulls.create({
                         owner: pr_data.owner,
@@ -162,15 +159,15 @@ module.exports = ({context, github, io, core}) => {
                         head: bot_branch,
                         base: pr_data.branch,
                         body: [
-                            `@${bot_name}: close ${issue_number}`,
-                            `@${bot_name}: no-propagate`,
+                            `@${config.bot_name}: close ${issue_number}`,
+                            `@${config.bot_name}: no-propagate`,
                             "",
                             `Based on PR #${pr_data.pr}`
                         ].join("\n"),
                     })
                     await github.issues.createComment({
-                        owner: central_repo_owner,
-                        repo: central_repo_repo,
+                        owner: config.central_repo_owner,
+                        repo: config.central_repo_repo,
                         issue_number: issue_number,
                         body: `Filed ${filed_pr.html_url}.`,
                     })
@@ -178,11 +175,11 @@ module.exports = ({context, github, io, core}) => {
                     await github.projects.moveCard({
                         card_id: card.id,
                         position: "top",
-                        column_id: central_needs_manual_intervention_column_id,
+                        column_id: config.central_needs_manual_intervention_column_id,
                     })
                     await github.issues.createComment({
-                        owner: central_repo_owner,
-                        repo: central_repo_repo,
+                        owner: config.central_repo_owner,
+                        repo: config.central_repo_repo,
                         issue_number: issue_number,
                         body: [
                             "stdout:",

@@ -1,6 +1,10 @@
 module.exports = ({context, github}) => {
+    const config = () => {
+        const path = require('path')
+        const scriptPath = path.resolve('./config.js')
+        return require(scriptPath)()
+    }()
     (async () => {
-        const bot_name = "krnowak-test-bot"
         let time_desc_re = /^\s*(\d+)([wdh])\s*$/
         let date_desc_re = /^\s*((\d{4})-(\d{1,2})-(\d{1,2}))\s*$/
         let issue_number_re = /^\s*(\d+)\s*$/
@@ -72,7 +76,7 @@ module.exports = ({context, github}) => {
         // branch_desc: alpha, beta, stable
         // date_spec: nope, asap, \d+[mwd] (month, week, day), yyyy-mm-dd
         // issue_number: \d+
-        const prefix = `@${bot_name}:`
+        const prefix = `@${config.bot_name}:`
         let messages = []
         const ps_unknown = 0
         const ps_no = 1
