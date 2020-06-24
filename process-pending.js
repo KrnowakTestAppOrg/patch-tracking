@@ -182,7 +182,7 @@ module.exports = ({context, github, io, core}) => {
                     let escapeRegex = (str) => {
                         return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
                     }
-                    let re = new RegExp("/" + escapeRegex(gh_token) + "/gi")
+                    let re = new RegExp(escapeRegex(gh_token), "gi")
                     await github.issues.createComment({
                         owner: config.central_repo_owner,
                         repo: config.central_repo_repo,
