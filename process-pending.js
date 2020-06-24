@@ -7,6 +7,7 @@ module.exports = ({context, github, io, core}) => {
     (async () => {
         if (context.payload.issue === null || context.payload.issue.number !== config.kicker_issue_number) {
             console.log("skipping the checks")
+            return
         }
 
         let date_desc_re = /^\s*((\d{4})-(\d{1,2})-(\d{1,2}))\s*$/
