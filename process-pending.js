@@ -147,7 +147,7 @@ module.exports = ({context, github, io, core}) => {
                     escaped_args.push(escape(arg))
                 }
                 try {
-                    await exec(`./.github/workflows/git-heavy-lifting.sh ${escaped_args.join(' ')}`)
+                    await exec(`./git-heavy-lifting.sh ${escaped_args.join(' ')}`)
                     await github.projects.moveCard({
                         card_id: card.id,
                         position: "top",
