@@ -1,9 +1,9 @@
 module.exports = ({context, github}) => {
-    const config = () => {
+    const config = (() => {
         const path = require('path')
         const scriptPath = path.resolve('./config.js')
         return require(scriptPath)()
-    }()
+    })()
     (async () => {
         let time_desc_re = /^\s*(\d+)([wdh])\s*$/
         let date_desc_re = /^\s*((\d{4})-(\d{1,2})-(\d{1,2}))\s*$/
@@ -221,5 +221,5 @@ module.exports = ({context, github}) => {
             })
         }
         // TODO: make it fail, if there are errors
-    })();
+    })()
 }

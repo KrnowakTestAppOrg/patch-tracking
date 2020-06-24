@@ -1,9 +1,9 @@
 module.exports = ({context, github, io, core}) => {
-    const config = () => {
+    const config = (() => {
         const path = require('path')
         const scriptPath = path.resolve('./config.js')
         return require(scriptPath)()
-    }()
+    })()
     (async () => {
         if (context.payload.issue === null || context.payload.issue.number !== config.kicker_issue_number) {
             console.log("skipping the checks")
@@ -202,5 +202,5 @@ module.exports = ({context, github, io, core}) => {
                 break
             }
         }
-    })();
+    })()
 }

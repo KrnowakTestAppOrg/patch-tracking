@@ -1,9 +1,9 @@
 module.exports = ({context, github}) => {
-    const config = () => {
+    const config = (() => {
         const path = require('path')
         const scriptPath = path.resolve('./config.js')
         return require(scriptPath)()
-    }()
+    })()
     (async () => {
         try {
             await github.pulls.checkIfMerged({
@@ -272,5 +272,5 @@ module.exports = ({context, github}) => {
                 state: "closed",
             })
         }
-    })();
+    })()
 }
