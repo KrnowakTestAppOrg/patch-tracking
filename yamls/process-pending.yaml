@@ -1,0 +1,23 @@
+name: process-pending
+
+on:
+  issues:
+    types: [edited]
+  issue_comment:
+    types: [created, edited, deleted]
+
+jobs:
+  process-pending:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: KrnowakTestAppOrg/patch-tracking
+          token: ${{secrets.BOTS_PAT}}
+      - uses: actions/github-script@v2
+        with:
+          github-token: ${{secrets.BOTS_PAT}}
+          script: |
+            const path = require('path')
+            const scriptPath = path.resolve('./process-pending.js')
+            require(scriptPath)({context, github, io, core})

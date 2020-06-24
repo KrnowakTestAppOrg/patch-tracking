@@ -1,0 +1,25 @@
+name: pr-merged
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - flatcar-master
+      - flatcar-master-alpha
+      - flatcar-master-beta
+
+jobs:
+  file-pending-issues:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: KrnowakTestAppOrg/patch-tracking
+          token: ${{secrets.BOTS_PAT}}
+      - uses: actions/github-script@v2
+        with:
+          github-token: ${{secrets.BOTS_PAT}}
+          script: |
+            const path = require('path')
+            const scriptPath = path.resolve('./pr-merged.js')
+            require(scriptPath)({context, github})
