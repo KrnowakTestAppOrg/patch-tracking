@@ -1,10 +1,10 @@
 module.exports = ({context, github}) => {
-    const config = (() => {
-        const path = require('path')
-        const scriptPath = path.resolve('./config.js')
-        return require(scriptPath)()
-    })()
     (async () => {
+        const config = (() => {
+            const path = require('path')
+            const scriptPath = path.resolve('./config.js')
+            return require(scriptPath)()
+        })()
         let time_desc_re = /^\s*(\d+)([wdh])\s*$/
         let date_desc_re = /^\s*((\d{4})-(\d{1,2})-(\d{1,2}))\s*$/
         let issue_number_re = /^\s*(\d+)\s*$/

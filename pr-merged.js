@@ -1,10 +1,10 @@
 module.exports = ({context, github}) => {
-    const config = (() => {
-        const path = require('path')
-        const scriptPath = path.resolve('./config.js')
-        return require(scriptPath)()
-    })()
     (async () => {
+        const config = (() => {
+            const path = require('path')
+            const scriptPath = path.resolve('./config.js')
+            return require(scriptPath)()
+        })()
         try {
             await github.pulls.checkIfMerged({
                 owner: context.repo.owner,
