@@ -179,6 +179,10 @@ module.exports = ({context, github, io, core}) => {
                         position: "top",
                         column_id: config.central_needs_manual_intervention_column_id,
                     })
+                    let escapeRegex = (str) => {
+                        return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
+                    }
+                    let re = new RegExp("/" + escapeRegex(gh_token) + "/gi")
                     await github.issues.createComment({
                         owner: config.central_repo_owner,
                         repo: config.central_repo_repo,
@@ -187,13 +191,13 @@ module.exports = ({context, github, io, core}) => {
                             "stdout:",
                             "",
                             "```",
-                            stdout.replaceAll(gh_token, "<redacted>"),
+                            stdout.replace(re, "<redacted>"),
                             "```",
                             "",
                             "stderr:",
                             "",
                             "```",
-                            stderr.replaceAll(gh_token, "<redacted>"),
+                            stderr.replace(re, "<redacted>"),
                             "```",
                         ].join("\n"),
                     })
