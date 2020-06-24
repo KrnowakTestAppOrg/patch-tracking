@@ -143,7 +143,8 @@ module.exports = ({context, github, io, core}) => {
                 }
                 const bot_branch = `test-bot/propagate-pr-${pr_data.pr}-${pr_data.branch}`
                 let escaped_args = []
-                for (const arg of [core.getInput('github-token'), pr_data.owner, pr_data.repo, pr_data.branch, bot_branch, ...pr_data.commits]) {
+                const gh_token = core.getInput('github-token')
+                for (const arg of [gh_token, pr_data.owner, pr_data.repo, pr_data.branch, bot_branch, ...pr_data.commits]) {
                     escaped_args.push(escape(arg))
                 }
                 try {
@@ -186,13 +187,13 @@ module.exports = ({context, github, io, core}) => {
                             "stdout:",
                             "",
                             "```",
-                            stdout,
+                            stdout.replaceAll(gh_token, "<redacted>"),
                             "```",
                             "",
                             "stderr:",
                             "",
                             "```",
-                            stderr,
+                            stderr.replaceAll(gh_token, "<redacted>"),
                             "```",
                         ].join("\n"),
                     })
