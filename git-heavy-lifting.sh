@@ -44,6 +44,8 @@ git checkout -b "${bot_branch}"
 for commit in "${@}"; do
     if ! git cherry-pick "${commit}"; then
         git cherry-pick --abort
+        git reset --hard HEAD
+        git clean -ffdx
         git checkout "${branch}"
         git branch -D "${bot_branch}"
         exit 1
