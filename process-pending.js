@@ -173,7 +173,7 @@ module.exports = ({context, github, io, core}) => {
                         issue_number: issue_number,
                         body: `Filed ${filed_pr.html_url}.`,
                     })
-                } catch ({error, stdout: output}) {
+                } catch ({name, message, stdout: output}) {
                     await github.projects.moveCard({
                         card_id: card.id,
                         position: "top",
@@ -183,6 +183,10 @@ module.exports = ({context, github, io, core}) => {
                         return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
                     }
                     let re = new RegExp(escapeRegex(gh_token), "gi")
+                    const sub = "<redacted>"
+                    const redacted_name = name.replace(re, sub)
+                    const redacted_message = message.replace(re, sub)
+                    const redacted_output = output.replace(re, sub)
                     await github.issues.createComment({
                         owner: config.central_repo_owner,
                         repo: config.central_repo_repo,
@@ -191,13 +195,13 @@ module.exports = ({context, github, io, core}) => {
                             "error:",
                             "",
                             "```",
-                            error.replace(re, "<redacted>"),
+                            `${redacted_name}: ${redacted_message}`,
                             "```",
                             "",
                             "output:",
                             "",
                             "```",
-                            output.replace(re, "<redacted>"),
+                            redacted_output,
                             "```",
                         ].join("\n"),
                     })
