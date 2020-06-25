@@ -144,7 +144,7 @@ module.exports = ({context, github, io, core}) => {
                 const bot_branch = `test-bot/propagate-pr-${pr_data.pr}-${pr_data.branch}`
                 let escaped_args = []
                 const gh_token = core.getInput('github-token')
-                for (const arg of [gh_token, pr_data.owner, pr_data.repo, pr_data.branch, bot_branch, ...pr_data.commits]) {
+                for (const arg of [gh_token, pr_data.owner, pr_data.repo, pr_data.branch, bot_branch, config.bot_email, config.bot_git_name, ...pr_data.commits]) {
                     escaped_args.push(escape(arg))
                 }
                 try {
@@ -182,11 +182,13 @@ module.exports = ({context, github, io, core}) => {
                     let escapeRegex = (str) => {
                         return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
                     }
-                    let re = new RegExp(escapeRegex(gh_token), "gi")
-                    const sub = "<redacted>"
-                    const redacted_name = name.replace(re, sub)
-                    const redacted_message = message.replace(re, sub)
-                    const redacted_output = output.replace(re, sub)
+                    let token_re = new RegExp(escapeRegex(gh_token), "gi")
+                    let email_re = new RegExp(escapeRegex(config.bot_email), "gi")
+                    const token_sub = "<redacted_token>"
+                    const email_sub = "<redacted_email>"
+                    const redacted_name = name.replace(token_re, token_sub).replace(email_re, email_sub)
+                    const redacted_message = message.replace(token_re, token_sub).replace(email_re, email_sub)
+                    const redacted_output = output.replace(token_re, token_sub).replace(email_re, email_sub)
                     await github.issues.createComment({
                         owner: config.central_repo_owner,
                         repo: config.central_repo_repo,

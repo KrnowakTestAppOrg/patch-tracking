@@ -1,6 +1,8 @@
 module.exports = () => {
     return {
         bot_name: "krnowak-test-bot",
+        bot_email: "krnowak.test.bot@gmail.com",
+        bot_git_name: "Test Bot",
         central_repo_owner: "KrnowakTestAppOrg",
         central_repo_repo: "central",
         central_pending_column_id: 9618257,

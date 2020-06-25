@@ -11,7 +11,9 @@ owner="${2}"
 repo="${3}"
 branch="${4}"
 bot_branch="${5}"
-shift 5
+bot_email="${6}"
+bot_git_name="${7}"
+shift 7
 
 workdir="$(dirname "${PWD}")/bot-work-dir"
 credsfile="${workdir}/creds"
@@ -21,8 +23,8 @@ mkdir -p "${workdir}"
 if [[ ! -e "${credsfile}" ]]; then
     git config --global credential.helper "store --file=${credsfile}"
     echo "https://${github_token}:x-oauth-basic@github.com" >"${credsfile}"
-    git config --global user.email 'krnowak.test.bot@gmail.com'
-    git config --global user.name 'Test Bot'
+    git config --global user.email "${bot_email}"
+    git config --global user.name "${bot_git_name}"
 fi
 
 repodir="${workdir}/repos/${owner}/${repo}"
