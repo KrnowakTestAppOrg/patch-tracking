@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# redirect stderr to stdout
+exec 2>&1
+
 set -euo pipefail
 set -x
 

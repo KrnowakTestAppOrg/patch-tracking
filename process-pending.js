@@ -173,7 +173,7 @@ module.exports = ({context, github, io, core}) => {
                         issue_number: issue_number,
                         body: `Filed ${filed_pr.html_url}.`,
                     })
-                } catch ({error, stdout, stderr}) {
+                } catch ({error, output}) {
                     await github.projects.moveCard({
                         card_id: card.id,
                         position: "top",
@@ -188,16 +188,8 @@ module.exports = ({context, github, io, core}) => {
                         repo: config.central_repo_repo,
                         issue_number: issue_number,
                         body: [
-                            "stdout:",
-                            "",
                             "```",
-                            stdout.replace(re, "<redacted>"),
-                            "```",
-                            "",
-                            "stderr:",
-                            "",
-                            "```",
-                            stderr.replace(re, "<redacted>"),
+                            output.replace(re, "<redacted>"),
                             "```",
                         ].join("\n"),
                     })
