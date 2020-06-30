@@ -173,6 +173,12 @@ module.exports = ({context, github, io, core}) => {
                         issue_number: issue_number,
                         body: `Filed ${filed_pr.html_url}.`,
                     })
+                    await github.issues.update({
+                        owner: config.central_repo_owner,
+                        repo: config.central_repo_repo,
+                        issue_number: issue_number,
+                        body: [`filed-pr: ${filed_pr.html_url}`, issue.body].join("\n")
+                    })
                 } catch ({name, message, stdout: output}) {
                     await github.projects.moveCard({
                         card_id: card.id,
