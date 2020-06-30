@@ -84,13 +84,12 @@ module.exports = ({context, github}) => {
         let propagation_status = ps_unknown
         let propagation_mixed_warned = false
         for (let line of lines) {
+            line = line.trim()
             if (!line.startsWith(prefix)) {
                 continue
             }
-            line = line.slice(prefix.length)
-            line = line.trim()
+            line = line.slice(prefix.length).trim()
             const [cmd, ...rest] = line.split(/\s+/)
-            let do_next = false
             if (cmd === "no-propagate") {
                 if (rest.length !== 0) {
                     messages.push(`expected nothing after "no-propagate" command in "${line}"`)
