@@ -205,7 +205,7 @@ module.exports = ({context, github}) => {
             }
             messages.push(`Unknown command "${cmd}" in line "${line}". Ignoring.`)
         }
-        if (propagation_status === ps_yes) {
+        if (propagation_status !== ps_no) {
             for (let branch_desc in propagate_branches) {
                 if (propagate_branches[branch_desc].available && propagate_branches[branch_desc].allowed && !propagate_branches[branch_desc].specified) {
                     messages.push(`Did not specify the propagation to "${branch_desc}" (${s2l_branch_map[branch_desc]}).`)
