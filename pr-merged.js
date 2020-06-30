@@ -258,7 +258,7 @@ module.exports = ({context, github}) => {
                 const { data: issue } = await github.issues.create({
                     owner: config.central_repo_owner,
                     repo: config.central_repo_repo,
-                    title: `Propagate PR ${issues.pr} from ${issues.owner}/${issues.repo} to ${branch.name}`,
+                    title: `For ${branch.name}: ${pr.title}`,
                     body: body.join("\n"),
                 })
                 await github.projects.createCard({
