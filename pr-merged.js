@@ -107,6 +107,10 @@ module.exports = ({context, github}) => {
             line = line.trim()
             const [cmd, ...rest] = line.split(/\s+/)
             if (cmd === "no-propagate") {
+                if (rest.length !== 0) {
+                    console.log('invalid "no-propagate" command')
+                    continue
+                }
                 if (propagation_status === ps_yes) {
                     if (!propagation_mixed_warned) {
                         console.log("mixed propagation commands")
