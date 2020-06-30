@@ -10,6 +10,12 @@ module.exports = ({context, github, io, core}) => {
             return
         }
 
+        let parse_propagation_issue = (() => {
+            const path = require('path')
+            const scriptPath = path.resolve('./parse-propagation-issue.js')
+            return require(scriptPath)()
+        })()
+
         let date_desc_re = /^\s*((\d{4})-(\d{1,2})-(\d{1,2}))\s*$/
         let issue_number_re = /^\s*(\d+)\s*$/
         let page = 0
@@ -64,78 +70,29 @@ module.exports = ({context, github, io, core}) => {
                     repo: config.central_repo_repo,
                     issue_number: issue_number,
                 })
-                const lines = issue.body.split("\n")
-                let commits_now = false
-                let pr_data = {
-                    commits: [],
+                let result = parse_propagation_issue(issue.body)
+                if (result.errors.length > 0) {
+                    for (let error of result.errors) {
+                        console.log(error)
+                    }
+                    continue card_loop
                 }
-                lines_loop:
-                for (let line of lines) {
-                    line = line.trim()
-                    if (line.length === 0) {
-                        continue
-                    }
-                    if (!commits_now) {
-                        let [key, ...values] = line.split(':')
-                        let value = values.join(':')
-                        key = key.trim()
-                        value = value.trim()
-                        switch (key) {
-                        case 'owner':
-                            pr_data.owner = value
-                            break
-                        case 'repo':
-                            pr_data.repo = value
-                            break
-                        case 'original-pr':
-                            pr_data.pr = value
-                            break
-                        case 'branch':
-                            pr_data.branch = value
-                            break
-                        case 'date':
-                            let match = value.match(date_desc_re)
-                            if (match === null || match.length !== 5) {
-                                console.log(`invalid date ${value} in issue ${issue_number}`)
-                                continue card_loop
-                            }
-                            const year = parseInt(match[2], 10)
-                            const month = parseInt(match[3], 10)
-                            const day = parseInt(match[4], 10)
-                            // months are zero-based in Date, but we
-                            // use 1-based in our messages
-                            let issue_date = new Date(year, month-1, day, 12)
-                            if ((issue_date.getFullYear() !== year) || (issue_date.getMonth() !== month-1) || (issue_date.getDate() !== day)) {
-                                console.log(`issue ${issue_number} has bogus date ${value} (actually ${issue_date.getFullYear()}-${issue_date.getMonth()+1}-${issue_date.getDate()})`)
-                                continue card_loop
-                            }
-                            let process = false
-                            if (year < date.getFullYear()) {
-                                process = true
-                            } else if (year > date.getFullYear()) {
-                            } else if (month-1 < date.getMonth()) {
-                                process = true
-                            } else if (month-1 > date.getMonth()) {
-                            } else if (day <= issue_date.getDate()) {
-                                process = true
-                            }
-                            if (!process) {
-                                console.log(`not processing issue ${issue_number}, it's time hasn't yet come (issues ${value} vs now ${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()})`)
-                                continue card_loop
-                            }
-                            break
-                        case 'commits':
-                            commits_now = true
-                            break
-                        }
-                    } else {
-                        if (/^[0-9A-Fa-f]{40}$/.test(line)) {
-                            pr_data.commits.push(line)
-                        } else {
-                            console.log(`${line} in issue ${issue_number} is not a valid commit`)
-                            continue card_loop
-                        }
-                    }
+                let pr_data = result.pr_data
+                let process = false
+                if (pr_data.date.getFullYear() < date.getFullYear()) {
+                    process = true
+                } else if (pr_data.date.getFullYear() > date.getFullYear()) {
+                } else if (pr_data.date.getMonth() < date.getMonth()) {
+                    process = true
+                } else if (pr_data.date.getMonth() > date.getMonth()) {
+                } else if (pr_data.date.getDate() <= date.getDate()) {
+                    process = true
+                }
+                if (!process) {
+                    const issue_date = `${pr_data.date.getFullYear()}-${pr_data.date.getMonth()+1}-${pr_data.date.getDate()}`
+                    const now_date = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`
+                    console.log(`not processing issue ${issue_number}, it's time hasn't yet come (issues ${issue_date} vs now ${now_date})`)
+                    continue card_loop
                 }
                 let escape = (str) => {
                     let escaped = str.replace(/'/gi, "'\\''");
