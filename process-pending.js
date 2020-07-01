@@ -13,7 +13,7 @@ module.exports = ({context, github, io, core}) => {
         let parse_propagation_issue = (() => {
             const path = require('path')
             const scriptPath = path.resolve('./parse-propagation-issue.js')
-            return require(scriptPath)()
+            return require(scriptPath)
         })()
 
         let date_desc_re = /^\s*((\d{4})-(\d{1,2})-(\d{1,2}))\s*$/
