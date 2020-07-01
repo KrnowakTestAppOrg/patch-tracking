@@ -1,0 +1,21 @@
+name: conflict-resolved
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  process-pending:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: KrnowakTestAppOrg/patch-tracking
+          token: ${{secrets.BOTS_PAT}}
+      - uses: actions/github-script@v2
+        with:
+          github-token: ${{secrets.BOTS_PAT}}
+          script: |
+            const path = require('path')
+            const scriptPath = path.resolve('./conflict-resolved.js')
+            require(scriptPath)({context, github, io, core})
