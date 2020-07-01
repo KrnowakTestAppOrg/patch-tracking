@@ -27,15 +27,31 @@ module.exports = ({body}) => {
             switch (key) {
             case 'owner':
                 pr_data.owner = value
+                if (pr_data.owner.length === 0) {
+                    errors.push(`The value for the "owner" key should not be empty.`)
+                    continue lines_loop
+                }
                 break
             case 'repo':
                 pr_data.repo = value
+                if (pr_data.repo.length === 0) {
+                    errors.push(`The value for the "repo" key should not be empty.`)
+                    continue lines_loop
+                }
                 break
             case 'original-pr':
                 pr_data.pr = parseInt(value, 10)
+                if (isNan(pr_data.pr)) {
+                    errors.push(`The value for the "original-pr" key is not a number (${value}).`)
+                    continue lines_loop
+                }
                 break
             case 'branch':
                 pr_data.branch = value
+                if (pr_data.branch.length === 0) {
+                    errors.push(`The value for the "branch" key should not be empty.`)
+                    continue lines_loop
+                }
                 break
             case 'date':
                 let match = value.match(date_desc_re)
@@ -57,12 +73,24 @@ module.exports = ({body}) => {
                 break
             case 'filed-pr':
                 pr_data.filed_pr = value
+                if (isNan(pr_data.filed_pr)) {
+                    errors.push(`The value for the "filed-pr" key is not a number (${value}).`)
+                    continue lines_loop
+                }
                 break
             case 'card-id':
                 pr_data.card_id = value
+                if (isNan(pr_data.card_id)) {
+                    errors.push(`The value for the "card-id" key is not a number (${value}).`)
+                    continue lines_loop
+                }
                 break
             case 'title':
                 pr_data.title = value
+                if (pr_data.title.length === 0) {
+                    errors.push(`The value for the "title" key should not be empty.`)
+                    continue lines_loop
+                }
                 break
             case 'commits':
                 commits_now = true
