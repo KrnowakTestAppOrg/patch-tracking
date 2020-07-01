@@ -2,6 +2,14 @@ module.exports = ({body}) => {
     const lines = body.split("\n")
     let commits_now = false
     let pr_data = {
+        owner: "",
+        repo: "",
+        pr: 0,
+        branch: "",
+        filed_pr: 0, // Filled only on cherry-pick success.
+        card_id: "", // Filled only on cherry-pick error.
+        date: null, // Date object.
+        title: "",
         commits: [],
     }
     let errors = []
@@ -24,7 +32,7 @@ module.exports = ({body}) => {
                 pr_data.repo = value
                 break
             case 'original-pr':
-                pr_data.pr = value
+                pr_data.pr = parseInt(value, 10)
                 break
             case 'branch':
                 pr_data.branch = value
@@ -46,6 +54,15 @@ module.exports = ({body}) => {
                     continue lines_loop
                 }
                 pr_data.date = issue_date
+                break
+            case 'filed-pr':
+                pr_data.filed_pr = value
+                break
+            case 'card-id':
+                pr_data.card_id = value
+                break
+            case 'title':
+                pr_data.title = value
                 break
             case 'commits':
                 commits_now = true
