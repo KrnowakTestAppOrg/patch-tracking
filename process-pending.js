@@ -15,6 +15,11 @@ module.exports = ({context, github, io, core}) => {
             const scriptPath = path.resolve('./parse-propagation-issue.js')
             return require(scriptPath)
         })()
+        let file_propagation_pr = (() => {
+            const path = require('path')
+            const scriptPath = path.resolve('./file-propagation-pr.js')
+            return require(scriptPath)
+        })
 
         let date_desc_re = /^\s*((\d{4})-(\d{1,2})-(\d{1,2}))\s*$/
         let issue_number_re = /^\s*(\d+)\s*$/
@@ -106,41 +111,19 @@ module.exports = ({context, github, io, core}) => {
                 }
                 try {
                     await exec(`./git-heavy-lifting.sh ${escaped_args.join(' ')}`)
-                    await github.projects.moveCard({
-                        card_id: card.id,
-                        position: "top",
-                        column_id: config.central_awaiting_review_column_id,
-                    })
-                    const { data: filed_pr } = await github.pulls.create({
-                        owner: pr_data.owner,
-                        repo: pr_data.repo,
-                        title: `Propagate PR ${pr_data.pr} to ${pr_data.branch}`,
-                        head: bot_branch,
-                        base: pr_data.branch,
-                        body: [
-                            `@${config.bot_name}: close ${issue_number}`,
-                            `@${config.bot_name}: no-propagate`,
-                            "",
-                            `Based on PR #${pr_data.pr}`
-                        ].join("\n"),
-                    })
-                    await github.issues.createComment({
-                        owner: config.central_repo_owner,
-                        repo: config.central_repo_repo,
-                        issue_number: issue_number,
-                        body: `Filed ${filed_pr.html_url}.`,
-                    })
-                    await github.issues.update({
-                        owner: config.central_repo_owner,
-                        repo: config.central_repo_repo,
-                        issue_number: issue_number,
-                        body: [`filed-pr: ${filed_pr.html_url}`, issue.body].join("\n")
-                    })
+                    pr_data.card_id = card.id
+                    await file_propagation_pr({github, config, pr_data, bot_branch, issue_number})
                 } catch ({name, message, stdout: output}) {
                     await github.projects.moveCard({
                         card_id: card.id,
                         position: "top",
                         column_id: config.central_needs_manual_intervention_column_id,
+                    })
+                    await github.issues.update({
+                        owner: config.central_repo_owner,
+                        repo: config.central_repo_repo,
+                        issue_number: issue_number,
+                        body: [issue.body, `card-id: ${card.id}`].join("\n")
                     })
                     let escapeRegex = (str) => {
                         return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
