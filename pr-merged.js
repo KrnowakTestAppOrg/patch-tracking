@@ -245,6 +245,7 @@ module.exports = ({context, github}) => {
                     break
                 }
             }
+            const pr_title = pr.title.trim().replace(/\n/g, " ")
             for (let branch of issues.branches) {
                 let body = [
                     `owner: ${issues.owner}`,
@@ -252,6 +253,7 @@ module.exports = ({context, github}) => {
                     `original-pr: ${issues.pr}`,
                     `branch: ${branch.name}`,
                     `date: ${branch.date.getFullYear()}-${branch.date.getMonth()+1}-${branch.date.getDate()}`,
+                    `title: ${pr_title}`,
                     `commits:`,
                     ...issues.commits,
                 ]
