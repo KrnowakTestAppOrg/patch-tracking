@@ -41,7 +41,7 @@ module.exports = ({body}) => {
                 break
             case 'original-pr':
                 pr_data.pr = parseInt(value, 10)
-                if (isNan(pr_data.pr)) {
+                if (isNaN(pr_data.pr)) {
                     errors.push(`The value for the "original-pr" key is not a number (${value}).`)
                     continue lines_loop
                 }
@@ -73,14 +73,14 @@ module.exports = ({body}) => {
                 break
             case 'filed-pr':
                 pr_data.filed_pr = value
-                if (isNan(pr_data.filed_pr)) {
+                if (isNaN(pr_data.filed_pr)) {
                     errors.push(`The value for the "filed-pr" key is not a number (${value}).`)
                     continue lines_loop
                 }
                 break
             case 'card-id':
                 pr_data.card_id = value
-                if (isNan(pr_data.card_id)) {
+                if (isNaN(pr_data.card_id)) {
                     errors.push(`The value for the "card-id" key is not a number (${value}).`)
                     continue lines_loop
                 }
