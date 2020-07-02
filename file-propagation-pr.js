@@ -1,5 +1,8 @@
-// pr_data should have its card_id field filled
 module.exports = async ({github, config, pr_data, head_branch, issue_number}) => {
+    if (pr_data.card_id === 0) {
+        // TODO: proper error
+        throw "no card id in PR data"
+    }
     const pr_data_to_issue_body = (() => {
         const path = require('path')
         const scriptPath = path.resolve('./pr-data-to-issue-body.js')
