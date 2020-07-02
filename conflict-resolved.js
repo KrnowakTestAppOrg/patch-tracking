@@ -43,6 +43,11 @@ module.exports = ({context, github, io, core}) => {
         }
         if (branch !== "") {
             const issue_number = context.payload.issue_number
+            const { data: issue } = await github.issues.get({
+                owner: config.central_repo_owner,
+                repo: config.central_repo_repo,
+                issue_number: issue_number,
+            })
             let result = parse_propagation_issue({body: issue.body})
             if (result.errors.length > 0) {
                 for (let error of result.errors) {
@@ -51,7 +56,7 @@ module.exports = ({context, github, io, core}) => {
                 continue card_loop
             }
             let pr_data = result.pr_data
-            await file_propagation_pr({github, config, pr_data, head_branch: branch, issue_number})
+            await file_propagation_pr({github, config, pr_data, head_branch: branch, issue})
         }
     })()
 }

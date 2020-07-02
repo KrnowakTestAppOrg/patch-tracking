@@ -1,5 +1,5 @@
 // pr_data should have its card_id field filled
-module.exports = async ({github, config, pr_data, head_branch, issue_number}) => {
+module.exports = async ({github, config, pr_data, head_branch, issue}) => {
     await github.projects.moveCard({
         card_id: pr_data.card_id,
         position: "top",
@@ -12,7 +12,7 @@ module.exports = async ({github, config, pr_data, head_branch, issue_number}) =>
         head: head_branch,
         base: pr_data.branch,
         body: [
-            `@${config.bot_name}: close ${issue_number}`,
+            `@${config.bot_name}: close ${issue.number}`,
             `@${config.bot_name}: no-propagate`,
             "",
             `Based on PR #${pr_data.pr}`
@@ -21,13 +21,13 @@ module.exports = async ({github, config, pr_data, head_branch, issue_number}) =>
     await github.issues.createComment({
         owner: config.central_repo_owner,
         repo: config.central_repo_repo,
-        issue_number: issue_number,
+        issue_number: issue.number,
         body: `Filed ${filed_pr.html_url}.`,
     })
     await github.issues.update({
         owner: config.central_repo_owner,
         repo: config.central_repo_repo,
-        issue_number: issue_number,
+        issue_number: issue.number,
         body: [`filed-pr: ${filed_pr.html_url}`, issue.body].join("\n")
     })
 }
