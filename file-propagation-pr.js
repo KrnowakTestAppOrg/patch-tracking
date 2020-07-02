@@ -1,5 +1,5 @@
 // pr_data should have its card_id field filled
-module.exports = async ({github, config, pr_data, head_branch, issue}) => {
+module.exports = async ({github, config, pr_data, head_branch, issue_number}) => {
     const pr_data_to_issue_body = (() => {
         const path = require('path')
         const scriptPath = path.resolve('./pr-data-to-issue-body.js')
@@ -17,7 +17,7 @@ module.exports = async ({github, config, pr_data, head_branch, issue}) => {
         head: head_branch,
         base: pr_data.branch,
         body: [
-            `@${config.bot_name}: close ${issue.number}`,
+            `@${config.bot_name}: close ${issue_number}`,
             `@${config.bot_name}: no-propagate`,
             "",
             `Based on PR #${pr_data.pr}`
@@ -26,14 +26,14 @@ module.exports = async ({github, config, pr_data, head_branch, issue}) => {
     await github.issues.createComment({
         owner: config.central_repo_owner,
         repo: config.central_repo_repo,
-        issue_number: issue.number,
+        issue_number: issue_number,
         body: `Filed ${filed_pr.html_url}.`,
     })
     pr_data.filed_pr_url = filed_pr.html_url
     await github.issues.update({
         owner: config.central_repo_owner,
         repo: config.central_repo_repo,
-        issue_number: issue.number,
+        issue_number: issue_number,
         body: pr_data_to_issue_body({pr_data}),
     })
 }
