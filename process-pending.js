@@ -110,9 +110,6 @@ module.exports = ({context, github, io, core}) => {
                 }
                 try {
                     await exec(`./git-heavy-lifting.sh ${escaped_args.join(' ')}`)
-                    let pr_data_clone = pr_data
-                    pr_data_clone.card_id = card.id
-                    await file_propagation_pr({github, config, pr_data: pr_data_clone, head_branch: bot_branch, issue_number})
                 } catch ({name, message, stdout: output}) {
                     await github.projects.moveCard({
                         card_id: card.id,
@@ -157,6 +154,8 @@ module.exports = ({context, github, io, core}) => {
                         ].join("\n"),
                     })
                 }
+                pr_data.card_id = card.id
+                await file_propagation_pr({github, config, pr_data, head_branch: bot_branch, issue_number})
             }
             if (cards.length < per_page) {
                 break
