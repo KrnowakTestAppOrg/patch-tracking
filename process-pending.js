@@ -156,7 +156,7 @@ module.exports = ({context, github, io, core}) => {
                 }
                 pr_data.card_id = card.id
                 console.log('config', config, 'pr_data', pr_data, 'head_branch', bot_branch, 'issue_number', issue_number, 'file_propagation_pr', file_propagation_pr)
-                file_propagation_pr({github, config, pr_data, head_branch: bot_branch, issue_number})
+                await file_propagation_pr({github, config, pr_data, head_branch: bot_branch, issue_number})
             }
             if (cards.length < per_page) {
                 break
