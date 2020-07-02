@@ -8,7 +8,7 @@ module.exports = ({body}) => {
         pr: 0,
         branch: "",
         filed_pr: 0, // Filled only on cherry-pick success.
-        card_id: "", // Filled only on cherry-pick error.
+        card_id: 0, // Filled only on cherry-pick error.
         date: null, // Date object.
         title: "",
         commits: [],
@@ -73,14 +73,14 @@ module.exports = ({body}) => {
                 pr_data.date = issue_date
                 break
             case 'filed-pr':
-                pr_data.filed_pr = value
+                pr_data.filed_pr = parseInt(value, 10)
                 if (isNaN(pr_data.filed_pr)) {
                     errors.push(`The value for the "filed-pr" key is not a number (${value}).`)
                     continue lines_loop
                 }
                 break
             case 'card-id':
-                pr_data.card_id = value
+                pr_data.card_id = parseInt(value, 10)
                 if (isNaN(pr_data.card_id)) {
                     errors.push(`The value for the "card-id" key is not a number (${value}).`)
                     continue lines_loop
