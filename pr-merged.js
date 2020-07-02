@@ -5,6 +5,11 @@ module.exports = ({context, github}) => {
             const scriptPath = path.resolve('./config.js')
             return require(scriptPath)()
         })()
+        const pr_data_to_issue_body = (() => {
+            const path = require('path')
+            const scriptPath = path.resolve('./pr-data-to-issue-body.js')
+            return require(scriptPath)()
+        })()
         try {
             await github.pulls.checkIfMerged({
                 owner: context.repo.owner,
@@ -247,21 +252,22 @@ module.exports = ({context, github}) => {
             }
             const pr_title = pr.title.trim().replace(/\n/g, " ")
             for (let branch of issues.branches) {
-                let body = [
-                    `owner: ${issues.owner}`,
-                    `repo: ${issues.repo}`,
-                    `original-pr: ${issues.pr}`,
-                    `branch: ${branch.name}`,
-                    `date: ${branch.date.getFullYear()}-${branch.date.getMonth()+1}-${branch.date.getDate()}`,
-                    `title: ${pr_title}`,
-                    `commits:`,
-                    ...issues.commits,
-                ]
+                let pr_data = {
+                    owner: issues.owner,
+                    repo: issues.repo,
+                    pr: issues.pr,
+                    branch: branch.name,
+                    filed_pr_url: "",
+                    card_id: 0,
+                    date: branch.date,
+                    title: pr_title,
+                    commits: issues.commits,
+                }
                 const { data: issue } = await github.issues.create({
                     owner: config.central_repo_owner,
                     repo: config.central_repo_repo,
                     title: `For ${branch.name}: ${pr.title}`,
-                    body: body.join("\n"),
+                    body: pr_data_to_issue_body({pr_data}),
                 })
                 await github.projects.createCard({
                     column_id: config.central_pending_column_id,
