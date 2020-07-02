@@ -75,7 +75,7 @@ module.exports = ({context, github, io, core}) => {
                     repo: config.central_repo_repo,
                     issue_number: issue_number,
                 })
-                let result = parse_propagation_issue(issue.body)
+                let result = parse_propagation_issue({body: issue.body})
                 if (result.errors.length > 0) {
                     for (let error of result.errors) {
                         console.log(error)
@@ -112,7 +112,7 @@ module.exports = ({context, github, io, core}) => {
                 try {
                     await exec(`./git-heavy-lifting.sh ${escaped_args.join(' ')}`)
                     pr_data.card_id = card.id
-                    await file_propagation_pr({github, config, pr_data, bot_branch, issue_number})
+                    await file_propagation_pr({github, config, pr_data, head_branch: bot_branch, issue_number})
                 } catch ({name, message, stdout: output}) {
                     await github.projects.moveCard({
                         card_id: card.id,
