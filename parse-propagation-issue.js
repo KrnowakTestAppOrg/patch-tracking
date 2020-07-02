@@ -7,7 +7,7 @@ module.exports = ({body}) => {
         repo: "",
         pr: 0,
         branch: "",
-        filed_pr: 0, // Filled only on cherry-pick success.
+        filed_pr_url: "", // Filled only on cherry-pick success.
         card_id: 0, // Filled only on cherry-pick error.
         date: null, // Date object.
         title: "",
@@ -72,10 +72,10 @@ module.exports = ({body}) => {
                 }
                 pr_data.date = issue_date
                 break
-            case 'filed-pr':
-                pr_data.filed_pr = parseInt(value, 10)
-                if (isNaN(pr_data.filed_pr)) {
-                    errors.push(`The value for the "filed-pr" key is not a number (${value}).`)
+            case 'filed-pr-url':
+                pr_data.filed_pr_url = value
+                if (pr_data.filed_pr_url.length === 0) {
+                    errors.push(`The value for the "filed-pr-url" key should not be empty.`)
                     continue lines_loop
                 }
                 break
