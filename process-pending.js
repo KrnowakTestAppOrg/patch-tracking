@@ -21,7 +21,6 @@ module.exports = ({context, github, io, core}) => {
             return require(scriptPath)
         })
 
-        let date_desc_re = /^\s*((\d{4})-(\d{1,2})-(\d{1,2}))\s*$/
         let issue_number_re = /^\s*(\d+)\s*$/
         let page = 0
         const per_page = 100

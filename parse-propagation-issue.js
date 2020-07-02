@@ -1,4 +1,5 @@
 module.exports = ({body}) => {
+    let date_desc_re = /^\s*((\d{4})-(\d{1,2})-(\d{1,2}))\s*$/
     const lines = body.split("\n")
     let commits_now = false
     let pr_data = {
