@@ -19,7 +19,7 @@ module.exports = ({context, github, io, core}) => {
             const path = require('path')
             const scriptPath = path.resolve('./file-propagation-pr.js')
             return require(scriptPath)
-        })
+        })()
 
         let issue_number_re = /^\s*(\d+)\s*$/
         let page = 0
