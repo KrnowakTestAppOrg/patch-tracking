@@ -110,20 +110,24 @@ module.exports = ({context, github, io, core}) => {
                 }
                 try {
                     await exec(`./git-heavy-lifting.sh ${escaped_args.join(' ')}`)
-                    pr_data.card_id = card.id
-                    await file_propagation_pr({github, config, pr_data, head_branch: bot_branch, issue_number})
+                    let pr_data_clone = pr_data
+                    pr_data_clone.card_id = card.id
+                    await file_propagation_pr({github, config, pr_data: pr_data_clone, head_branch: bot_branch, issue_number})
                 } catch ({name, message, stdout: output}) {
                     await github.projects.moveCard({
                         card_id: card.id,
                         position: "top",
                         column_id: config.central_needs_manual_intervention_column_id,
                     })
-                    await github.issues.update({
-                        owner: config.central_repo_owner,
-                        repo: config.central_repo_repo,
-                        issue_number: issue_number,
-                        body: [issue.body, `card-id: ${card.id}`].join("\n")
-                    })
+                    // TODO: always put card-id into the issue
+                    if (pr_data.card_id !== 0) {
+                        await github.issues.update({
+                            owner: config.central_repo_owner,
+                            repo: config.central_repo_repo,
+                            issue_number: issue_number,
+                            body: [`card-id: ${card.id}`, issue.body].join("\n")
+                        })
+                    }
                     let escapeRegex = (str) => {
                         return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
                     }
