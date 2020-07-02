@@ -1,6 +1,5 @@
 // pr_data should have its card_id field filled
 module.exports = async ({github, config, pr_data, head_branch, issue_number}) => {
-    console.log('config', config, 'pr_data', pr_data, 'head_branch', head_branch, 'issue_number', issue_number)
     await github.projects.moveCard({
         card_id: pr_data.card_id,
         position: "top",
