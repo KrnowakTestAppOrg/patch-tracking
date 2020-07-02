@@ -10,7 +10,7 @@ module.exports = ({context, github, io, core}) => {
             repo: config.central_repo_repo,
             comment_id: context.payload.comment.id,
         })
-        const lines = issue.body.split("\n")
+        const lines = comment.body.split("\n")
         const prefix = `@${config.bot_name}:`
         const errors = []
         const messages = []
@@ -43,12 +43,7 @@ module.exports = ({context, github, io, core}) => {
         }
         if (branch !== "") {
             const issue_number = context.payload.issue_number
-            const { data: issue } = await github.issues.get({
-                owner: config.central_repo_owner,
-                repo: config.central_repo_repo,
-                issue_number: issue_number,
-            })
-            let result = parse_propagation_issue({body: issue.body})
+            let result = parse_propagation_issue({body: context.payload.issue.body})
             if (result.errors.length > 0) {
                 for (let error of result.errors) {
                     console.log(error)
