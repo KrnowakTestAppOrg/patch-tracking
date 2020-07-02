@@ -1,5 +1,10 @@
 // pr_data should have its card_id field filled
 module.exports = async ({github, config, pr_data, head_branch, issue}) => {
+    const pr_data_to_issue_body = (() => {
+        const path = require('path')
+        const scriptPath = path.resolve('./pr-data-to-issue-body.js')
+        return require(scriptPath)()
+    })()
     await github.projects.moveCard({
         card_id: pr_data.card_id,
         position: "top",
@@ -24,10 +29,11 @@ module.exports = async ({github, config, pr_data, head_branch, issue}) => {
         issue_number: issue.number,
         body: `Filed ${filed_pr.html_url}.`,
     })
+    pr_data.filed_pr_url = filed_pr.html_url
     await github.issues.update({
         owner: config.central_repo_owner,
         repo: config.central_repo_repo,
         issue_number: issue.number,
-        body: [`filed-pr: ${filed_pr.html_url}`, issue.body].join("\n")
+        body: pr_data_to_issue_body({pr_data}),
     })
 }
