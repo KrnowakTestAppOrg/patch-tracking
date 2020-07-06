@@ -3,7 +3,7 @@ module.exports = ({pr_data}) => {
     if (pr_data.filed_pr_url.length > 0) {
         body.push(`filed-pr-url: ${pr_data.filed_pr_url}`)
     }
-    body.push(`title: ${pr_title}`)
+    body.push(`title: ${pr_data.title}`)
     body.push(`owner: ${pr_data.owner}`)
     body.push(`repo: ${pr_data.repo}`)
     body.push(`original-pr: ${pr_data.pr}`)
