@@ -8,7 +8,7 @@ module.exports = ({context, github}) => {
         const pr_data_to_issue_body = (() => {
             const path = require('path')
             const scriptPath = path.resolve('./pr-data-to-issue-body.js')
-            return require(scriptPath)()
+            return require(scriptPath)
         })()
         try {
             await github.pulls.checkIfMerged({
