@@ -52,6 +52,7 @@ module.exports = ({context, github, io, core}) => {
             // TODO: create a comment with errors
         }
         if (branch !== "") {
+            console.log("context:", context)
             const issue_number = context.payload.issue_number
             let result = parse_propagation_issue({body: context.payload.issue.body})
             if (result.errors.length > 0) {
