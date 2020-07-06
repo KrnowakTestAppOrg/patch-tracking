@@ -48,7 +48,7 @@ module.exports = ({context, github, io, core}) => {
                 for (let error of result.errors) {
                     console.log(error)
                 }
-                continue card_loop
+                return
             }
             let pr_data = result.pr_data
             await file_propagation_pr({github, config, pr_data, head_branch: branch, issue_number})
