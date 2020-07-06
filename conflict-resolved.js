@@ -5,6 +5,11 @@ module.exports = ({context, github, io, core}) => {
             const scriptPath = path.resolve('./config.js')
             return require(scriptPath)()
         })()
+        let parse_propagation_issue = (() => {
+            const path = require('path')
+            const scriptPath = path.resolve('./parse-propagation-issue.js')
+            return require(scriptPath)
+        })()
         const { data: comment } = await github.issues.getComment({
             owner: config.central_repo_owner,
             repo: config.central_repo_repo,
