@@ -153,6 +153,7 @@ module.exports = ({context, github, io, core}) => {
                             "```",
                         ].join("\n"),
                     })
+                    continue card_loop
                 }
                 pr_data.card_id = card.id
                 await file_propagation_pr({github, config, pr_data, head_branch: bot_branch, issue_number})
