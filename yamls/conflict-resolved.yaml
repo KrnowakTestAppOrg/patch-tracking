@@ -5,7 +5,7 @@ on:
     types: [created]
 
 jobs:
-  process-pending:
+  conflict-resolved:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
