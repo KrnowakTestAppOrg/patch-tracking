@@ -20,6 +20,11 @@ module.exports = ({context, github, io, core}) => {
             const scriptPath = path.resolve('./file-propagation-pr.js')
             return require(scriptPath)
         })()
+        const pr_data_to_issue_body = (() => {
+            const path = require('path')
+            const scriptPath = path.resolve('./pr-data-to-issue-body.js')
+            return require(scriptPath)
+        })()
 
         let issue_number_re = /^\s*(\d+)\s*$/
         let page = 0
@@ -117,12 +122,13 @@ module.exports = ({context, github, io, core}) => {
                         column_id: config.central_needs_manual_intervention_column_id,
                     })
                     // TODO: always put card-id into the issue
-                    if (pr_data.card_id !== 0) {
+                    if (pr_data.card_id === 0) {
+                        pr_data.card_id = card.id
                         await github.issues.update({
                             owner: config.central_repo_owner,
                             repo: config.central_repo_repo,
                             issue_number: issue_number,
-                            body: [`card-id: ${card.id}`, issue.body].join("\n")
+                            body: pr_data_to_issue_body({pr_data}),
                         })
                     }
                     let escapeRegex = (str) => {
