@@ -53,7 +53,7 @@ module.exports = ({context, github, io, core}) => {
         }
         if (branch !== "") {
             console.log("context:", context)
-            const issue_number = context.payload.issue_number
+            const issue_number = context.payload.issue.number
             let result = parse_propagation_issue({body: context.payload.issue.body})
             if (result.errors.length > 0) {
                 for (let error of result.errors) {
