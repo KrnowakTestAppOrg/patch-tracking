@@ -47,6 +47,9 @@ module.exports = ({context, github}) => {
             target_branch: pr.base.ref,
             branches_set: flatcar_branches,
         })
+        if (result.cmd_data.resolve_branch !== "") {
+            result.errors.push("Resolve branch commands are ignored in this context.")
+        }
         if (result.cmd_data.propagation_status === "yes") {
             let page = 0
             let per_page = 100
@@ -100,6 +103,14 @@ module.exports = ({context, github}) => {
                     content_id: issue.id,
                     content_type: "Issue",
                 })
+                if (result.errors.length > 0) {
+                    await github.issues.createComment({
+                        owner: config.central_repo_owner,
+                        repo: config.central_repo_repo,
+                        issue_number: issue.number,
+                        body: result.errors.join("\n"),
+                    })
+                }
             }
         }
         for (let issue_number of result.cmd_data.closings) {

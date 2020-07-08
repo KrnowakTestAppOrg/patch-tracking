@@ -36,7 +36,12 @@ module.exports = ({context, github, io, core}) => {
             result.errors.push("Closing commands are ignored in this context")
         }
         if (result.errors.length > 0) {
-            // TODO: create a comment with errors
+            await github.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.issue.number,
+                body: result.errors.join("\n"),
+            })
             throw 42
         }
         if (result.cmd_data.resolve_branch !== "") {
@@ -44,7 +49,12 @@ module.exports = ({context, github, io, core}) => {
                 body: context.payload.issue.body
             })
             if (result2.errors.length > 0) {
-                // TODO: create a comment with errors
+                await github.issues.createComment({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: context.payload.issue.number,
+                    body: result2.errors.join("\n"),
+                })
                 throw 42
             }
             await file_propagation_pr({

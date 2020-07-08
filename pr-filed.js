@@ -32,12 +32,15 @@ module.exports = ({context, github}) => {
             target_branch: pr.base.ref,
             branches_set: flatcar_branches,
         })
+        if (result.cmd_data.resolve_branch !== "") {
+            result.errors.push("Resolve branch commands are ignored in this context.")
+        }
         if (result.errors.length > 0) {
             await github.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.payload.pull_request.number,
-                body: errors.join("\n"),
+                body: result.errors.join("\n"),
             })
             throw 42
         }
