@@ -13,7 +13,16 @@ module.exports = ({body, bot_name}) => {
     let escapeRegex = (str) => {
         return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
     }
-    let prefix_re = new RegExp(`^@${escapeRegex(bot_name)}\s*[:,](.*)$`, "")
+    // matches:
+    // @bot_name command
+    // @bot_name: command
+    // @bot_name, command
+    // @bot_name : command
+    // @bot_name , command
+    //
+    // but not:
+    // @bot_namecommand
+    let prefix_re = new RegExp(`^@${escapeRegex(bot_name)}\\b\\s*[:,]?\\s*(.*)$`, "")
     let cmd_data = {
         // Either "yes" if propagating, "no" if not propagating, "?"
         // if no propagation command was found
