@@ -1,9 +1,9 @@
 module.exports = async ({github, context, config}) => {
-    let all_flatcar_branches_set = {}
+    let all_flatcar_branches = {}
     for (let [short_name, full_name] of config.short_to_full_branch_map) {
-        all_flatcar_branches_set[full_name] = {}
+        all_flatcar_branches[full_name] = {}
     }
-    let available_flatcar_branches_set = {}
+    let available_flatcar_branches = {}
     const per_page = 100
     let page = 0
     while (1) {
@@ -17,7 +17,7 @@ module.exports = async ({github, context, config}) => {
             per_page: per_page,
         })
         for (let branch of branches) {
-            if (branch.name in all_flatcar_branches_set) {
+            if (branch.name in all_flatcar_branches) {
                 available_flatcar_branches[branch.name] = true
             }
         }
@@ -25,5 +25,5 @@ module.exports = async ({github, context, config}) => {
             break
         }
     }
-    return available_flatcar_branches_set
+    return available_flatcar_branches
 }
