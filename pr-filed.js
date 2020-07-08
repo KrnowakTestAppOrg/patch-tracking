@@ -53,7 +53,7 @@ module.exports = ({context, github}) => {
                 if (prop_branch.date === null) {
                     messages.push(`Will not propagate the changes to ${prop_branch.name} (${s2l_branch_map[prop_branch.name]}).`)
                 } else {
-                    messages.push(`Will cherry pick the commits to ${branch_desc} (${s2l_branch_map[prop_branch.name]}) on ${prop_branch.date.getFullYear()}-${prop_branch.date.getMonth()+1}-${prop_branch.date.getDate()}.`)
+                    messages.push(`Will cherry pick the commits to ${prop_branch.name} (${s2l_branch_map[prop_branch.name]}) on ${prop_branch.date.getFullYear()}-${prop_branch.date.getMonth()+1}-${prop_branch.date.getDate()}.`)
                 }
             }
         }
