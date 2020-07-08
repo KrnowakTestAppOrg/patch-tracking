@@ -27,6 +27,7 @@ module.exports = ({body, config, target_branch, branches_set}) => {
     })
     if (result.cmd_data.propagation_status !== "no") {
         for (let prop_branch of result.cmd_data.propagation_branches) {
+            console.log("processing prop branch:", prop_branch.name)
             if (!(prop_branch.name in s2l_branch_map)) {
                 let all_branch_names = []
                 for (let [branch_desc] of config.short_to_full_branch_map) {
