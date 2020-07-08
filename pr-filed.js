@@ -44,6 +44,7 @@ module.exports = ({context, github}) => {
             })
             throw 42
         }
+        let messages = []
         for (let issue_number of result.cmd_data.closings) {
             messages.push(`Will close patch tracking issue ${issue_number}.`)
         }
