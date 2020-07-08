@@ -9,5 +9,13 @@ module.exports = () => {
         central_awaiting_review_column_id: 9618258,
         central_needs_manual_intervention_column_id: 9618260,
         kicker_issue_number: 7,
+        // The order is important, it's possible to propagate from a
+        // branch to all the branches below it.
+        short_to_full_branch_map: [
+            ["edge", "flatcar-master-edge"],
+            ["alpha", "flatcar-master-alpha"],
+            ["beta", "flatcar-master-beta"],
+            ["stable", "flatcar-master"],
+        ],
     }
 }
