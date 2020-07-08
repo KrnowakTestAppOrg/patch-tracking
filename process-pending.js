@@ -79,7 +79,9 @@ module.exports = ({context, github, io, core}) => {
                     repo: config.central_repo_repo,
                     issue_number: issue_number,
                 })
-                let result = parse_propagation_issue({body: issue.body})
+                let result = parse_propagation_issue({
+                    body: issue.body
+                })
                 if (result.errors.length > 0) {
                     for (let error of result.errors) {
                         console.log(error)
@@ -128,7 +130,9 @@ module.exports = ({context, github, io, core}) => {
                             owner: config.central_repo_owner,
                             repo: config.central_repo_repo,
                             issue_number: issue_number,
-                            body: pr_data_to_issue_body({pr_data}),
+                            body: pr_data_to_issue_body({
+                                pr_data: pr_data,
+                            }),
                         })
                     }
                     let escapeRegex = (str) => {
@@ -162,7 +166,13 @@ module.exports = ({context, github, io, core}) => {
                     continue card_loop
                 }
                 pr_data.card_id = card.id
-                await file_propagation_pr({github, config, pr_data, head_branch: bot_branch, issue_number})
+                await file_propagation_pr({
+                    github: github,
+                    config: config,
+                    pr_data: pr_data,
+                    head_branch: bot_branch,
+                    issue_number: issue_number,
+                })
             }
             if (cards.length < per_page) {
                 break
