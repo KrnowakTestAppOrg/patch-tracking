@@ -35,25 +35,25 @@ module.exports = ({body, config, target_branch, branches_set}) => {
                     }
                 }
                 if (all_branch_names.length > 0) {
-                    result.cmd_data.errors.push(`"${prop_branch.name}" is not a valid branch description. Allowed branch descriptions are ${all_branch_names.join(", ")}.`)
+                    result.errors.push(`"${prop_branch.name}" is not a valid branch description. Allowed branch descriptions are ${all_branch_names.join(", ")}.`)
                 } else {
-                    result.cmd_data.errors.push(`"${prop_branch.name}" is not a valid branch description. And it's not possible to propagate the changes further.`)
+                    result.errors.push(`"${prop_branch.name}" is not a valid branch description. And it's not possible to propagate the changes further.`)
                 }
                 continue
             }
             if (!propagate_branches[prop_branch.name].available) {
-                result.cmd_data.errors.push(`"${prop_branch.name}" (${s2l_branch_map[prop_branch.name]}) is not available in the repo.`)
+                result.errors.push(`"${prop_branch.name}" (${s2l_branch_map[prop_branch.name]}) is not available in the repo.`)
                 continue
             }
             if (!propagate_branches[prop_branch.name].allowed) {
-                result.cmd_data.errors.push(`"${prop_branch.name}" (${s2l_branch_map[prop_branch.name]}) is not a valid branch description to propagate to from "${l2s_branch_map[target_branch]}" (${target_branch}).`)
+                result.errors.push(`"${prop_branch.name}" (${s2l_branch_map[prop_branch.name]}) is not a valid branch description to propagate to from "${l2s_branch_map[target_branch]}" (${target_branch}).`)
                 continue
             }
             propagate_branches[prop_branch.name].specified = true
         }
         for (let branch_desc in propagate_branches) {
             if (propagate_branches[branch_desc].available && propagate_branches[branch_desc].allowed && !propagate_branches[branch_desc].specified) {
-                result.cmd_data.errors.push(`Did not specify the propagation to "${branch_desc}" (${s2l_branch_map[branch_desc]}).`)
+                result.errors.push(`Did not specify the propagation to "${branch_desc}" (${s2l_branch_map[branch_desc]}).`)
             }
         }
     }
