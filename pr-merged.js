@@ -93,7 +93,7 @@ module.exports = ({context, github}) => {
                 const { data: issue } = await github.issues.create({
                     owner: config.central_repo_owner,
                     repo: config.central_repo_repo,
-                    title: `For ${branch.name}: ${pr.title}`,
+                    title: `For ${prop_branch.name}: ${pr.title}`,
                     body: pr_data_to_issue_body({
                         pr_data: pr_data,
                     }),
