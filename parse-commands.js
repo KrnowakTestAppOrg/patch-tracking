@@ -27,9 +27,9 @@ module.exports = ({body, bot_name}) => {
         // Either "yes" if propagating, "no" if not propagating, "?"
         // if no propagation command was found
         propagation_status: "?",
-        // Contains objects with "name" and "date" keys. "name" is a
-        // target name, "date" is a Date object or null if no
-        // propagation should take place. Filled only when
+        // Contains objects with "desc" and "date" keys. "desc" is a
+        // description of target branch, "date" is a Date object or
+        // null if no propagation should take place. Filled only when
         // propagation_status is "yes".
         propagation_branches: [],
         // Contains tracking issue numbers to be closed.
@@ -140,7 +140,7 @@ module.exports = ({body, bot_name}) => {
                     }
                 }
                 cmd_data.propagation_branches.push({
-                    name: branch_desc,
+                    desc: branch_desc,
                     date: date,
                 })
             }
