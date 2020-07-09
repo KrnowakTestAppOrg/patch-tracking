@@ -103,14 +103,6 @@ module.exports = ({context, github}) => {
                     content_id: issue.id,
                     content_type: "Issue",
                 })
-                if (result.errors.length > 0) {
-                    await github.issues.createComment({
-                        owner: config.central_repo_owner,
-                        repo: config.central_repo_repo,
-                        issue_number: issue.number,
-                        body: result.errors.join("\n"),
-                    })
-                }
             }
         }
         for (let issue_number of result.cmd_data.closings) {
@@ -119,6 +111,14 @@ module.exports = ({context, github}) => {
                 repo: config.central_repo_repo,
                 issue_number: issue_number,
                 state: "closed",
+            })
+        }
+        if (result.errors.length > 0) {
+            await github.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.payload.pull_request.number,
+                body: ["Errors encountered during processing the merged PR:", "", ...result.errors].join("\n"),
             })
         }
     })()
