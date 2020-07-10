@@ -32,7 +32,7 @@ module.exports = ({context, github, io, core}) => {
         if (result.cmd_data.propagation_status !== "?") {
             result.errors.push("Propagation commands are ignored in this context")
         }
-        if (result.closings.length > 0) {
+        if (result.cmd_data.closings.length > 0) {
             result.errors.push("Closing commands are ignored in this context")
         }
         if (result.errors.length > 0) {
