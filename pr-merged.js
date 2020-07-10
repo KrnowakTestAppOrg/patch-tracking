@@ -79,7 +79,7 @@ module.exports = ({context, github}) => {
                         card_id: 0,
                         date: prop_branch.date,
                         title: pr_title,
-                        commits: results2.commits,
+                        commits: result2.commits,
                     }
                     const { data: issue } = await github.issues.create({
                         owner: config.central_repo_owner,
