@@ -112,7 +112,7 @@ module.exports = ({context, github}) => {
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 pull_number: context.payload.pull_request.number,
-                body: ["Errors encountered during processing the merged PR:", "", ...result.errors].join("\n"),
+                body: ["Errors encountered during processing the merged PR:", "", ...result.errors, "", "After fixing them, re-run the pr-merged job."].join("\n"),
             })
         }
     })()
