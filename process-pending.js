@@ -150,6 +150,8 @@ module.exports = ({context, github, io, core}) => {
                         repo: config.central_repo_repo,
                         issue_number: issue_number,
                         body: [
+                            `A bot was unable to cherry-pick the changes and then to file a PR. Most likely the failure is because cherry-picking some commit resulted in a conflict that the bot is unable to resolve. Please cherry-pick the commits listed above (in that order), resolve the conflicts along the way, and push a branch with the changes to the repository. With that done, please add a comment below to tell the bot to file a PR with the changes in the branch. The command is \`@${config.bot_name}: resolve BRANCH_NAME\`.`,
+                            "",
                             "error:",
                             "",
                             "```",
