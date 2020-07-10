@@ -20,6 +20,11 @@ module.exports = ({context, github}) => {
             const scriptPath = path.resolve('./get-flatcar-branches.js')
             return require(scriptPath)
         })()
+        const get_pr_commits = (() => {
+            const path = require('path')
+            const scriptPath = path.resolve('./get-pr-commits.js')
+            return require(scriptPath)
+        })()
 
         try {
             await github.pulls.checkIfMerged({
@@ -50,68 +55,57 @@ module.exports = ({context, github}) => {
         if (result.cmd_data.resolve_branch !== "") {
             result.errors.push("Resolve branch commands are ignored in this context.")
         }
-        if (result.cmd_data.propagation_status === "yes") {
-            let page = 0
-            let per_page = 100
-            let pr_commits = []
-            while (1) {
-                // page numbering is 1-based, so we increment it
-                // before doing the call
-                page++
-                const { data: commits } = await github.pulls.listCommits({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    pull_number: context.payload.pull_request.number,
-                    per_page: per_page,
-                    page: page,
-                })
-                // TODO: I'm not sure if this returns commits sorted
-                // by parents.
-                for (let commit of commits) {
-                    pr_commits.push(commit.sha)
+        if (result.errors.length === 0 && result.cmd_data.propagation_status === "yes") {
+            let result2 = await get_pr_commits({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.payload.pull_request.number,
+                github: github,
+            })
+            if (result2.error !== "") {
+                result.errors.push(result2.error)
+            } else {
+                const pr_title = pr.title.trim().replace(/\n/g, " ")
+                for (let prop_branch of result.cmd_data.propagation_branches) {
+                    if (prop_branch.date === null) {
+                        continue
+                    }
+                    let pr_data = {
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        pr: context.payload.pull_request.number,
+                        branch: prop_branch.name,
+                        filed_pr_url: "",
+                        card_id: 0,
+                        date: prop_branch.date,
+                        title: pr_title,
+                        commits: results2.commits,
+                    }
+                    const { data: issue } = await github.issues.create({
+                        owner: config.central_repo_owner,
+                        repo: config.central_repo_repo,
+                        title: `For ${prop_branch.name}: ${pr.title}`,
+                        body: pr_data_to_issue_body({
+                            pr_data: pr_data,
+                        }),
+                    })
+                    await github.projects.createCard({
+                        column_id: config.central_pending_column_id,
+                        content_id: issue.id,
+                        content_type: "Issue",
+                    })
                 }
-                if (commits.length < per_page) {
-                    break
-                }
-            }
-            const pr_title = pr.title.trim().replace(/\n/g, " ")
-            for (let prop_branch of result.cmd_data.propagation_branches) {
-                if (prop_branch.date === null) {
-                    continue
-                }
-                let pr_data = {
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    pr: context.payload.pull_request.number,
-                    branch: prop_branch.name,
-                    filed_pr_url: "",
-                    card_id: 0,
-                    date: prop_branch.date,
-                    title: pr_title,
-                    commits: pr_commits,
-                }
-                const { data: issue } = await github.issues.create({
-                    owner: config.central_repo_owner,
-                    repo: config.central_repo_repo,
-                    title: `For ${prop_branch.name}: ${pr.title}`,
-                    body: pr_data_to_issue_body({
-                        pr_data: pr_data,
-                    }),
-                })
-                await github.projects.createCard({
-                    column_id: config.central_pending_column_id,
-                    content_id: issue.id,
-                    content_type: "Issue",
-                })
             }
         }
-        for (let issue_number of result.cmd_data.closings) {
-            await github.issues.update({
-                owner: config.central_repo_owner,
-                repo: config.central_repo_repo,
-                issue_number: issue_number,
-                state: "closed",
-            })
+        if (result.errors.length === 0) {
+            for (let issue_number of result.cmd_data.closings) {
+                await github.issues.update({
+                    owner: config.central_repo_owner,
+                    repo: config.central_repo_repo,
+                    issue_number: issue_number,
+                    state: "closed",
+                })
+            }
         }
         if (result.errors.length > 0) {
             await github.issues.createComment({
