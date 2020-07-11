@@ -7,18 +7,18 @@ module.exports = ({config, context, github, io, core}) => {
 
         let parse_propagation_issue = (() => {
             const path = require('path')
-            const scriptPath = path.resolve('./actions/helpers/parse-propagation-issue.js')
-            return require(scriptPath)
+            const script_path = path.resolve('./actions/helpers/parse-propagation-issue.js')
+            return require(script_path)
         })()
         let file_propagation_pr = (() => {
             const path = require('path')
-            const scriptPath = path.resolve('./actions/helpers/file-propagation-pr.js')
-            return require(scriptPath)
+            const script_path = path.resolve('./actions/helpers/file-propagation-pr.js')
+            return require(script_path)
         })()
         const pr_data_to_issue_body = (() => {
             const path = require('path')
-            const scriptPath = path.resolve('./actions/helpers/pr-data-to-issue-body.js')
-            return require(scriptPath)
+            const script_path = path.resolve('./actions/helpers/pr-data-to-issue-body.js')
+            return require(script_path)
         })()
 
         let issue_number_re = /^\s*(\d+)\s*$/
@@ -130,11 +130,11 @@ module.exports = ({config, context, github, io, core}) => {
                             }),
                         })
                     }
-                    let escapeRegex = (str) => {
+                    let escape_regexp = (str) => {
                         return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
                     }
-                    let token_re = new RegExp(escapeRegex(gh_token), "gi")
-                    let email_re = new RegExp(escapeRegex(config.bot_email), "gi")
+                    let token_re = new RegExp(escape_regexp(gh_token), "gi")
+                    let email_re = new RegExp(escape_regexp(config.bot_email), "gi")
                     const token_sub = "<redacted_token>"
                     const email_sub = "<redacted_email>"
                     const redacted_name = name.replace(token_re, token_sub).replace(email_re, email_sub)

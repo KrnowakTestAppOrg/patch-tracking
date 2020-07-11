@@ -10,7 +10,7 @@ module.exports = ({body, bot_name}) => {
     // branch_desc: alpha, beta, stable
     // date_spec: nope, asap, \d+[mwd] (month, week, day), yyyy-mm-dd
     // issue_number: \d+
-    let escapeRegex = (str) => {
+    let escape_regexp = (str) => {
         return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
     }
     // matches:
@@ -22,7 +22,7 @@ module.exports = ({body, bot_name}) => {
     //
     // but not:
     // @bot_namecommand
-    let prefix_re = new RegExp(`^@${escapeRegex(bot_name)}\\b\\s*[:,]?\\s*(.*)$`, "")
+    let prefix_re = new RegExp(`^@${escape_regexp(bot_name)}\\b\\s*[:,]?\\s*(.*)$`, "")
     let cmd_data = {
         // Either "yes" if propagating, "no" if not propagating, "?"
         // if no propagation command was found

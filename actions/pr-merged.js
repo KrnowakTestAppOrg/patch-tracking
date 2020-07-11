@@ -2,23 +2,23 @@ module.exports = ({config, context, github, io, core}) => {
     (async () => {
         const pr_data_to_issue_body = (() => {
             const path = require('path')
-            const scriptPath = path.resolve('./actions/helpers/pr-data-to-issue-body.js')
-            return require(scriptPath)
+            const script_path = path.resolve('./actions/helpers/pr-data-to-issue-body.js')
+            return require(script_path)
         })()
         const parse_flatcar_commands = (() => {
             const path = require('path')
-            const scriptPath = path.resolve('./actions/helpers/parse-flatcar-commands.js')
-            return require(scriptPath)
+            const script_path = path.resolve('./actions/helpers/parse-flatcar-commands.js')
+            return require(script_path)
         })()
         const get_flatcar_branches = (() => {
             const path = require('path')
-            const scriptPath = path.resolve('./actions/helpers/get-flatcar-branches.js')
-            return require(scriptPath)
+            const script_path = path.resolve('./actions/helpers/get-flatcar-branches.js')
+            return require(script_path)
         })()
         const get_pr_commits = (() => {
             const path = require('path')
-            const scriptPath = path.resolve('./actions/helpers/get-pr-commits.js')
-            return require(scriptPath)
+            const script_path = path.resolve('./actions/helpers/get-pr-commits.js')
+            return require(script_path)
         })()
 
         try {

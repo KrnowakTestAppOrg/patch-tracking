@@ -2,18 +2,18 @@ module.exports = ({config, context, github, io, core}) => {
     (async () => {
         let parse_propagation_issue = (() => {
             const path = require('path')
-            const scriptPath = path.resolve('./actions/helpers/parse-propagation-issue.js')
-            return require(scriptPath)
+            const script_path = path.resolve('./actions/helpers/parse-propagation-issue.js')
+            return require(script_path)
         })()
         let file_propagation_pr = (() => {
             const path = require('path')
-            const scriptPath = path.resolve('./actions/helpers/file-propagation-pr.js')
-            return require(scriptPath)
+            const script_path = path.resolve('./actions/helpers/file-propagation-pr.js')
+            return require(script_path)
         })()
         let parse_commands = (() => {
             const path = require('path')
-            const scriptPath = path.resolve('./actions/helpers/parse-commands.js')
-            return require(scriptPath)
+            const script_path = path.resolve('./actions/helpers/parse-commands.js')
+            return require(script_path)
         })()
 
         const { data: comment } = await github.issues.getComment({

@@ -5,8 +5,8 @@ module.exports = async ({github, pr_data, head_branch, issue_number, target_colu
     }
     const pr_data_to_issue_body = (() => {
         const path = require('path')
-        const scriptPath = path.resolve('./actions/helpers/pr-data-to-issue-body.js')
-        return require(scriptPath)
+        const script_path = path.resolve('./actions/helpers/pr-data-to-issue-body.js')
+        return require(script_path)
     })()
     await github.projects.moveCard({
         card_id: pr_data.card_id,

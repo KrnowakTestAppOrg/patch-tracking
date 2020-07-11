@@ -1,8 +1,8 @@
 module.exports = ({body, target_branch, branches_set, branch_map, bot_name}) => {
     const parse_commands = (() => {
         const path = require('path')
-        const scriptPath = path.resolve('./actions/helpers/parse-commands.js')
-        return require(scriptPath)
+        const script_path = path.resolve('./actions/helpers/parse-commands.js')
+        return require(script_path)
     })()
 
     let s2l_branch_map = {}

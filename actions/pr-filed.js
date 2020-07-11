@@ -2,13 +2,13 @@ module.exports = ({config, context, github, io, core}) => {
     (async () => {
         const parse_flatcar_commands = (() => {
             const path = require('path')
-            const scriptPath = path.resolve('./actions/helpers/parse-flatcar-commands.js')
-            return require(scriptPath)
+            const script_path = path.resolve('./actions/helpers/parse-flatcar-commands.js')
+            return require(script_path)
         })()
         const get_flatcar_branches = (() => {
             const path = require('path')
-            const scriptPath = path.resolve('./actions/helpers/get-flatcar-branches.js')
-            return require(scriptPath)
+            const script_path = path.resolve('./actions/helpers/get-flatcar-branches.js')
+            return require(script_path)
         })()
 
         const { data: pr } = await github.pulls.get({
