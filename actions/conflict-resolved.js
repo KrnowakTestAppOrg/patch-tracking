@@ -20,6 +20,7 @@ module.exports = ({context, github, io, core}) => {
             const scriptPath = path.resolve('./parse-commands.js')
             return require(scriptPath)
         })()
+
         const { data: comment } = await github.issues.getComment({
             owner: config.central_repo_owner,
             repo: config.central_repo_repo,
@@ -44,6 +45,7 @@ module.exports = ({context, github, io, core}) => {
             })
             throw 42
         }
+        // TODO: ensure that the branch actually exists
         if (result.cmd_data.resolve_branch !== "") {
             let result2 = parse_propagation_issue({
                 body: context.payload.issue.body
