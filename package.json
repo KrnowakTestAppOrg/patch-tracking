@@ -1,0 +1,22 @@
+{
+  "name": "patch-tracking",
+  "version": "0.0.1",
+  "description": "Patch tracking for Flatcar Container Linux",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KrnowakTestAppOrg/patch-tracking.git"
+  },
+  "author": "Krzesimir Nowak",
+  "license": "TODO",
+  "bugs": {
+    "url": "https://github.com/KrnowakTestAppOrg/patch-tracking/issues"
+  },
+  "homepage": "https://github.com/KrnowakTestAppOrg/patch-tracking#readme",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^8.0.1"
+  }
+}
