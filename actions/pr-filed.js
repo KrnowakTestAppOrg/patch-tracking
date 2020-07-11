@@ -1,10 +1,5 @@
-module.exports = ({context, github}) => {
+module.exports = ({config, context, github, io, core}) => {
     (async () => {
-        const config = (() => {
-            const path = require('path')
-            const scriptPath = path.resolve('./config.js')
-            return require(scriptPath)()
-        })()
         const parse_flatcar_commands = (() => {
             const path = require('path')
             const scriptPath = path.resolve('./actions/helpers/parse-flatcar-commands.js')

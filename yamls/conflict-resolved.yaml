@@ -18,4 +18,6 @@ jobs:
           script: |
             const path = require('path')
             const scriptPath = path.resolve('./actions/conflict-resolved.js')
-            require(scriptPath)({context, github, io, core})
+            const configPath = path.resolve('./config.js')
+            const config = require(scriptPath)()
+            require(scriptPath)({config, context, github, io, core})

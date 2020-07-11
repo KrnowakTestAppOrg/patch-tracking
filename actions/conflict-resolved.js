@@ -1,10 +1,5 @@
-module.exports = ({context, github, io, core}) => {
+module.exports = ({config, context, github, io, core}) => {
     (async () => {
-        const config = (() => {
-            const path = require('path')
-            const scriptPath = path.resolve('./config.js')
-            return require(scriptPath)()
-        })()
         let parse_propagation_issue = (() => {
             const path = require('path')
             const scriptPath = path.resolve('./actions/helpers/parse-propagation-issue.js')

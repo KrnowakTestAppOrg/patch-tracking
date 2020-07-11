@@ -1,10 +1,5 @@
-module.exports = ({context, github}) => {
+module.exports = ({config, context, github, io, core}) => {
     (async () => {
-        const config = (() => {
-            const path = require('path')
-            const scriptPath = path.resolve('./config.js')
-            return require(scriptPath)()
-        })()
         const pr_data_to_issue_body = (() => {
             const path = require('path')
             const scriptPath = path.resolve('./actions/helpers/pr-data-to-issue-body.js')

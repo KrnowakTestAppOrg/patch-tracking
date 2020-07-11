@@ -20,4 +20,6 @@ jobs:
           script: |
             const path = require('path')
             const scriptPath = path.resolve('./actions/process-pending.js')
-            require(scriptPath)({context, github, io, core})
+            const configPath = path.resolve('./config.js')
+            const config = require(scriptPath)()
+            require(scriptPath)({config, context, github, io, core})

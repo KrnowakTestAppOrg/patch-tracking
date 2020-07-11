@@ -22,4 +22,6 @@ jobs:
           script: |
             const path = require('path')
             const scriptPath = path.resolve('./actions/pr-merged.js')
-            require(scriptPath)({context, github})
+            const configPath = path.resolve('./config.js')
+            const config = require(scriptPath)()
+            require(scriptPath)({config, context, github, io, core})
