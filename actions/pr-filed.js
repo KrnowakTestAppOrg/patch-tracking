@@ -24,9 +24,10 @@ module.exports = ({config, context, github, io, core}) => {
         })
         let result = parse_flatcar_commands({
             body: context.payload.pull_request.body,
-            config: config,
             target_branch: pr.base.ref,
             branches_set: flatcar_branches,
+            branch_map: config.short_to_full_branch_map,
+            bot_name: config.bot_name,
         })
         if (result.cmd_data.resolve_branch !== "") {
             result.errors.push("Resolve branch commands are ignored in this context.")

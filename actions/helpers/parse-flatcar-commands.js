@@ -1,4 +1,4 @@
-module.exports = ({body, config, target_branch, branches_set}) => {
+module.exports = ({body, target_branch, branches_set, branch_map, bot_name}) => {
     const parse_commands = (() => {
         const path = require('path')
         const scriptPath = path.resolve('./actions/helpers/parse-commands.js')
@@ -9,7 +9,7 @@ module.exports = ({body, config, target_branch, branches_set}) => {
     let l2s_branch_map = {}
     let propagate_branches = {}
     let allowed_setting = false
-    for (let [short_name, full_name] of config.short_to_full_branch_map) {
+    for (let [short_name, full_name] of branch_map) {
         s2l_branch_map[short_name] = full_name
         l2s_branch_map[full_name] = short_name
         propagate_branches[short_name] = {
@@ -25,14 +25,14 @@ module.exports = ({body, config, target_branch, branches_set}) => {
     // and we will drop the bad branches
     let result = parse_commands({
         body: body,
-        bot_name: config.bot_name,
+        bot_name: bot_name,
     })
     let good_propagation_branches = []
     if (result.cmd_data.propagation_status !== "no") {
         for (let prop_branch of result.cmd_data.propagation_branches) {
             if (!(prop_branch.desc in s2l_branch_map)) {
                 let all_branch_descs = []
-                for (let [branch_desc] of config.short_to_full_branch_map) {
+                for (let [branch_desc] of branch_map) {
                     if (propagate_branches[branch_desc].allowed) {
                         all_branch_descs.push(`"${branch_desc}"`)
                     }
