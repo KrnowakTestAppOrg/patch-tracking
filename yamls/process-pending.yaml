@@ -19,5 +19,5 @@ jobs:
           github-token: ${{secrets.BOTS_PAT}}
           script: |
             const path = require('path')
-            const scriptPath = path.resolve('./process-pending.js')
+            const scriptPath = path.resolve('./actions/process-pending.js')
             require(scriptPath)({context, github, io, core})

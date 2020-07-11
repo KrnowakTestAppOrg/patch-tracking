@@ -1,7 +1,7 @@
 module.exports = ({body, config, target_branch, branches_set}) => {
     const parse_commands = (() => {
         const path = require('path')
-        const scriptPath = path.resolve('./parse-commands.js')
+        const scriptPath = path.resolve('./actions/helpers/parse-commands.js')
         return require(scriptPath)
     })()
 

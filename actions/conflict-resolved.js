@@ -7,17 +7,17 @@ module.exports = ({context, github, io, core}) => {
         })()
         let parse_propagation_issue = (() => {
             const path = require('path')
-            const scriptPath = path.resolve('./parse-propagation-issue.js')
+            const scriptPath = path.resolve('./actions/helpers/parse-propagation-issue.js')
             return require(scriptPath)
         })()
         let file_propagation_pr = (() => {
             const path = require('path')
-            const scriptPath = path.resolve('./file-propagation-pr.js')
+            const scriptPath = path.resolve('./actions/helpers/file-propagation-pr.js')
             return require(scriptPath)
         })()
         let parse_commands = (() => {
             const path = require('path')
-            const scriptPath = path.resolve('./parse-commands.js')
+            const scriptPath = path.resolve('./actions/helpers/parse-commands.js')
             return require(scriptPath)
         })()
 

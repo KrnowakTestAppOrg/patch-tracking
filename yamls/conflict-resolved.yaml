@@ -17,5 +17,5 @@ jobs:
           github-token: ${{secrets.BOTS_PAT}}
           script: |
             const path = require('path')
-            const scriptPath = path.resolve('./conflict-resolved.js')
+            const scriptPath = path.resolve('./actions/conflict-resolved.js')
             require(scriptPath)({context, github, io, core})

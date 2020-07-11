@@ -7,12 +7,12 @@ module.exports = ({context, github}) => {
         })()
         const parse_flatcar_commands = (() => {
             const path = require('path')
-            const scriptPath = path.resolve('./parse-flatcar-commands.js')
+            const scriptPath = path.resolve('./actions/helpers/parse-flatcar-commands.js')
             return require(scriptPath)
         })()
         const get_flatcar_branches = (() => {
             const path = require('path')
-            const scriptPath = path.resolve('./get-flatcar-branches.js')
+            const scriptPath = path.resolve('./actions/helpers/get-flatcar-branches.js')
             return require(scriptPath)
         })()
 

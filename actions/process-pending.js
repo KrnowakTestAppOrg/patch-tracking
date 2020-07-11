@@ -12,17 +12,17 @@ module.exports = ({context, github, io, core}) => {
 
         let parse_propagation_issue = (() => {
             const path = require('path')
-            const scriptPath = path.resolve('./parse-propagation-issue.js')
+            const scriptPath = path.resolve('./actions/helpers/parse-propagation-issue.js')
             return require(scriptPath)
         })()
         let file_propagation_pr = (() => {
             const path = require('path')
-            const scriptPath = path.resolve('./file-propagation-pr.js')
+            const scriptPath = path.resolve('./actions/helpers/file-propagation-pr.js')
             return require(scriptPath)
         })()
         const pr_data_to_issue_body = (() => {
             const path = require('path')
-            const scriptPath = path.resolve('./pr-data-to-issue-body.js')
+            const scriptPath = path.resolve('./actions/helpers/pr-data-to-issue-body.js')
             return require(scriptPath)
         })()
 

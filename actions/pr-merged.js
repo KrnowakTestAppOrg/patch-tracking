@@ -7,22 +7,22 @@ module.exports = ({context, github}) => {
         })()
         const pr_data_to_issue_body = (() => {
             const path = require('path')
-            const scriptPath = path.resolve('./pr-data-to-issue-body.js')
+            const scriptPath = path.resolve('./actions/helpers/pr-data-to-issue-body.js')
             return require(scriptPath)
         })()
         const parse_flatcar_commands = (() => {
             const path = require('path')
-            const scriptPath = path.resolve('./parse-flatcar-commands.js')
+            const scriptPath = path.resolve('./actions/helpers/parse-flatcar-commands.js')
             return require(scriptPath)
         })()
         const get_flatcar_branches = (() => {
             const path = require('path')
-            const scriptPath = path.resolve('./get-flatcar-branches.js')
+            const scriptPath = path.resolve('./actions/helpers/get-flatcar-branches.js')
             return require(scriptPath)
         })()
         const get_pr_commits = (() => {
             const path = require('path')
-            const scriptPath = path.resolve('./get-pr-commits.js')
+            const scriptPath = path.resolve('./actions/helpers/get-pr-commits.js')
             return require(scriptPath)
         })()
 
