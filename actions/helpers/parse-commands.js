@@ -1,5 +1,5 @@
 module.exports = ({body, bot_name}) => {
-    let time_desc_re = /^\s*(\d+)([wdh])\s*$/
+    let time_desc_re = /^\s*(\d+)([mwd])\s*$/
     let date_desc_re = /^\s*((\d{4})-(\d{1,2})-(\d{1,2}))\s*$/
     let issue_number_re = /^\s*(\d+)\s*$/
     const lines = body.split("\n")
