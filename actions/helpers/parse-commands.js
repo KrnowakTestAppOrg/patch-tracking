@@ -73,7 +73,7 @@ module.exports = ({body, bot_name}) => {
                 errors.push(`"${rest[0]}" in "${line}" is not a valid issue number.`)
                 continue
             }
-            const issue_number = match[1]
+            const issue_number = parseInt(match[1], 10)
             cmd_data.closings.push(issue_number)
             continue
         }
