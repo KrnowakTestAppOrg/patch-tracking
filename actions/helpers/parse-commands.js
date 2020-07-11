@@ -152,7 +152,7 @@ module.exports = ({body, bot_name}) => {
                 continue
             }
             if (cmd_data.resolve_branch.length !== 0) {
-                errors.push(`The branch with resolved conflict is already specified ("${branch}")`)
+                errors.push(`The branch with resolved conflict is already specified ("${cmd_data.resolve_branch}")`)
                 continue
             }
             cmd_data.resolve_branch = rest[0]
