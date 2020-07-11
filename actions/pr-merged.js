@@ -37,9 +37,10 @@ module.exports = ({config, context, github, io, core}) => {
             pull_number: context.payload.pull_request.number,
         })
         const flatcar_branches = await get_flatcar_branches({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
             github: github,
-            context: context,
-            config: config,
+            branch_map: config.short_to_full_branch_map,
         })
         let result = parse_flatcar_commands({
             body: context.payload.pull_request.body,

@@ -1,6 +1,6 @@
-module.exports = async ({github, context, config}) => {
+module.exports = async ({owner, repo, github, branch_map}) => {
     let all_flatcar_branches = {}
-    for (let [short_name, full_name] of config.short_to_full_branch_map) {
+    for (let [short_name, full_name] of branch_map) {
         all_flatcar_branches[full_name] = {}
     }
     let available_flatcar_branches = {}
@@ -11,8 +11,8 @@ module.exports = async ({github, context, config}) => {
         // before doing the call
         page++
         const { data: branches } = await github.repos.listBranches({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
+            owner: owner,
+            repo: repo,
             page: page,
             per_page: per_page,
         })
