@@ -70,7 +70,7 @@ module.exports = ({body, bot_name}) => {
             }
             let match = rest[0].match(issue_number_re)
             if (match === null || match.length !== 2) {
-                errors.push(`"${issue_number}" in "${line}" is not a valid issue number.`)
+                errors.push(`"${rest[0]}" in "${line}" is not a valid issue number.`)
                 continue
             }
             const issue_number = match[1]
