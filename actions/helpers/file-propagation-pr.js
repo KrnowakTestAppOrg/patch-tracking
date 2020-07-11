@@ -1,4 +1,4 @@
-module.exports = async ({github, config, pr_data, head_branch, issue_number}) => {
+module.exports = async ({github, pr_data, head_branch, issue_number, target_column_id, bot_name, central_owner, central_repo}) => {
     if (pr_data.card_id === 0) {
         // TODO: proper error
         throw "no card id in PR data"
@@ -11,7 +11,7 @@ module.exports = async ({github, config, pr_data, head_branch, issue_number}) =>
     await github.projects.moveCard({
         card_id: pr_data.card_id,
         position: "top",
-        column_id: config.central_awaiting_review_column_id,
+        column_id: target_column_id,
     })
     const { data: filed_pr } = await github.pulls.create({
         owner: pr_data.owner,
@@ -20,22 +20,22 @@ module.exports = async ({github, config, pr_data, head_branch, issue_number}) =>
         head: head_branch,
         base: pr_data.branch,
         body: [
-            `@${config.bot_name}: close ${issue_number}`,
-            `@${config.bot_name}: no-propagate`,
+            `@${bot_name}: close ${issue_number}`,
+            `@${bot_name}: no-propagate`,
             "",
             `Based on PR #${pr_data.pr}`
         ].join("\n"),
     })
     await github.issues.createComment({
-        owner: config.central_repo_owner,
-        repo: config.central_repo_repo,
+        owner: central_owner,
+        repo: central_repo,
         issue_number: issue_number,
         body: `Filed ${filed_pr.html_url}.`,
     })
     pr_data.filed_pr_url = filed_pr.html_url
     await github.issues.update({
-        owner: config.central_repo_owner,
-        repo: config.central_repo_repo,
+        owner: central_owner,
+        repo: central_repo,
         issue_number: issue_number,
         body: pr_data_to_issue_body({pr_data}),
     })

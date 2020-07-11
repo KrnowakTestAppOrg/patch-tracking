@@ -56,10 +56,13 @@ module.exports = ({config, context, github, io, core}) => {
             }
             await file_propagation_pr({
                 github: github,
-                config: config,
                 pr_data: result2.pr_data,
                 head_branch: result.cmd_data.resolve_branch,
                 issue_number: context.payload.issue.number,
+                target_column_id: config.central_awaiting_review_column_id,
+                bot_name: config.bot_name,
+                central_owner: config.central_repo_owner,
+                central_repo: config.central_repo_repo,
             })
         }
     })()

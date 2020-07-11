@@ -165,10 +165,13 @@ module.exports = ({config, context, github, io, core}) => {
                 pr_data.card_id = card.id
                 await file_propagation_pr({
                     github: github,
-                    config: config,
                     pr_data: pr_data,
                     head_branch: bot_branch,
-                    issue_number: issue_number,
+                    issue_number: issue.number,
+                    target_column_id: config.central_awaiting_review_column_id,
+                    bot_name: config.bot_name,
+                    central_owner: config.central_repo_owner,
+                    central_repo: config.central_repo_repo,
                 })
             }
             if (cards.length < per_page) {
