@@ -27,11 +27,17 @@ module.exports = async ({owner, repo, pull_number, github}) => {
                 }
             }
             const parent_sha = commit.parents[0].sha
+            if (sha_to_parent_sha.has(commit.sha)) {
+                return {
+                    commits: [],
+                    error: `Commit ${commit.sha} appears twice in a PR.`,
+                }
+            }
             sha_to_parent_sha.set(commit.sha, parent_sha)
             if (sha_to_child_sha.has(parent_sha) && sha_to_child_sha.get(parent_sha) !== commit.sha) {
                 return {
                     commits: [],
-                    error: `Commit ${parent.sha} has more than one child. Make sure that the commits in PR are linear.`,
+                    error: `Commit ${parent_sha} has more than one child. Make sure that the commits in PR are linear.`,
                 }
             }
             sha_to_child_sha.set(parent_sha, commit.sha)
