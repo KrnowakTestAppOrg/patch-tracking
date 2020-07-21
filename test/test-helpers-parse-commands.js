@@ -1,24 +1,20 @@
 let assert = require('chai').assert
-
-
+let mockdate = require('mockdate')
 
 describe('parse-commands', function() {
     const path = require('path')
     const script_path = path.resolve('./actions/helpers/parse-commands.js')
     const parse_commands = require(script_path)
-
     // months are 0-based, so 6 is for July, not June
     const current_date = new Date(2020, 6, 11, 21, 28, 33, 456)
-    let real_Date = Date
-    global.Date = class extends Date {
-        constructor(date) {
-            if (date) {
-                return super(date)
-            }
 
-            return current_date
-        }
-    }
+    beforeEach(() => {
+        mockdate.set(current_date)
+    })
+
+    afterEach(() => {
+        mockdate.reset()
+    })
 
     it('should parse valid commands correctly', function() {
         let testcases = [
@@ -384,6 +380,4 @@ describe('parse-commands', function() {
             assert.isNotEmpty(result.errors)
         }
     })
-
-    global.Date = real_Date
 })
