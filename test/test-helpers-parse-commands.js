@@ -232,8 +232,8 @@ describe('parse-commands', function() {
         ]
         for (let testcase of testcases) {
             const result = parse_commands(testcase.input)
-            assert.isEmpty(result.errors, result.errors)
-            assert.deepEqual(result.cmd_data, testcase.output)
+            assert.isEmpty(result.errors, `${testcase.msg} failed (${result.errors})`)
+            assert.deepEqual(result.cmd_data, testcase.output, `${testcase.msg} failed`)
         }
     })
 
@@ -377,7 +377,7 @@ describe('parse-commands', function() {
         ]
         for (let testcase of testcases) {
             const result = parse_commands(testcase.input)
-            assert.isNotEmpty(result.errors)
+            assert.isNotEmpty(result.errors, `${testcase.msg} failed`)
         }
     })
 })
