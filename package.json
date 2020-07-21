@@ -16,7 +16,9 @@
   },
   "homepage": "https://github.com/KrnowakTestAppOrg/patch-tracking#readme",
   "devDependencies": {
+    "@octokit/rest": "^18.0.0",
     "chai": "^4.2.0",
-    "mocha": "^8.0.1"
+    "mocha": "^8.0.1",
+    "mockdate": "^3.0.2"
   }
 }
