@@ -1,8 +1,8 @@
 let assert = require('chai').assert
+const path = require('path')
 let mockdate = require('mockdate')
 
 describe('parse-commands', function() {
-    const path = require('path')
     const script_path = path.resolve('./actions/helpers/parse-commands.js')
     const parse_commands = require(script_path)
     // months are 0-based, so 6 is for July, not June
