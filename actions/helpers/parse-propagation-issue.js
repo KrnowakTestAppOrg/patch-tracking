@@ -13,6 +13,22 @@ module.exports = ({body}) => {
         title: "",
         commits: [],
     }
+    let fields = (() => {
+        let required_fields = ['owner', 'repo', 'original-pr', 'branch', 'date', 'title', 'commits'];
+        let optional_fields = ['filed-pr-url', 'card-id']
+        let required_mode = true
+        let fields_for_map = []
+        for (let fields of [required_fields, optional_fields]) {
+            for (let field of fields) {
+                fields_for_map.push([field, {
+                    required: required_mode,
+                    count: 0,
+                }])
+            }
+            required_mode = false
+        }
+        return new Map(fields_for_map)
+    })()
     let errors = []
     lines_loop:
     for (let line of lines) {
@@ -25,6 +41,11 @@ module.exports = ({body}) => {
             let value = values.join(':')
             key = key.trim()
             value = value.trim()
+            if (!fields.has(key)) {
+                errors.push(`Unknown key "${key}".`)
+                continue lines_loop
+            }
+            fields.get(key).count++
             switch (key) {
             case 'owner':
                 pr_data.owner = value
@@ -105,6 +126,16 @@ module.exports = ({body}) => {
                 continue lines_loop
             }
         }
+    }
+    fields.forEach((info, field) => {
+        if (info.count > 1) {
+            errors.push(`Field "${field}" specified ${info.count} times.`)
+        } else if (info.count === 0 && info.required) {
+            errors.push(`Missing required field "${field}".`)
+        }
+    })
+    if (fields.get('commits').count > 0 && pr_data.commits.length === 0) {
+        errors.push("No commits specified.")
     }
     return {
         pr_data: pr_data,
