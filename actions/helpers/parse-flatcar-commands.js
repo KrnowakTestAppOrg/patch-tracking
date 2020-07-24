@@ -27,8 +27,8 @@ module.exports = ({body, target_branch, branches_set, branch_map, bot_name}) => 
         body: body,
         bot_name: bot_name,
     })
-    let good_propagation_branches = []
     if (result.cmd_data.propagation_status !== "no") {
+        let good_propagation_branches = []
         for (let prop_branch of result.cmd_data.propagation_branches) {
             if (!(prop_branch.desc in s2l_branch_map)) {
                 let all_branch_descs = []
